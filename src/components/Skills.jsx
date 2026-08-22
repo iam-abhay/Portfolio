@@ -1,9 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Code2, Server, Layout, Database, Wrench, Activity, BarChart2 } from 'lucide-react';
-import { SKILL_CATEGORIES } from '../lib/data';
+import { Cpu, Code2, Server, Layout, Database, Wrench, Activity, BarChart2, Loader2, AlertCircle } from 'lucide-react';
+import { fetchSkills } from '../lib/api';
 
-export default function Skills({ categories = SKILL_CATEGORIES }) {
+export default function Skills() {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadSkillsData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchSkills();
+        if (isMounted) {
+          setCategories(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load technical skills from Supabase.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    loadSkillsData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const iconMap = {
     languages: Code2,
     backend: Server,
@@ -32,10 +62,28 @@ export default function Skills({ categories = SKILL_CATEGORIES }) {
           </p>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-16 space-y-3 text-slate-500 dark:text-slate-400">
+            <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
+            <p className="text-xs font-mono">Fetching technical skills ecosystem from Supabase...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 max-w-xl mx-auto text-center space-y-2 my-8">
+            <AlertCircle className="w-6 h-6 mx-auto text-rose-500" />
+            <h4 className="font-heading font-bold text-sm">Database Connection Notice</h4>
+            <p className="text-xs leading-relaxed">{error}</p>
+          </div>
+        )}
+
         {/* Skills Category Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat, idx) => {
-            const IconComponent = iconMap[cat.id] || Cpu;
+        {!loading && !error && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((cat, idx) => {
+              const IconComponent = iconMap[cat.id] || Cpu;
 
             return (
               <motion.div
@@ -69,6 +117,7 @@ export default function Skills({ categories = SKILL_CATEGORIES }) {
             );
           })}
         </div>
+        )}
 
       </div>
     </section>
