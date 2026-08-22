@@ -1,9 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, Calendar, MapPin } from 'lucide-react';
-import { INITIAL_EXPERIENCE } from '../lib/data';
+import { Briefcase, Calendar, MapPin, Loader2, AlertCircle } from 'lucide-react';
+import { fetchExperience } from '../lib/api';
 
-export default function Experience({ experiences = INITIAL_EXPERIENCE }) {
+export default function Experience() {
+  const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchExperience();
+        if (isMounted) {
+          setExperiences(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load experience records from Supabase.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   return (
     <section id="experience" className="py-24 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,9 +51,27 @@ export default function Experience({ experiences = INITIAL_EXPERIENCE }) {
           </p>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-16 space-y-3 text-slate-500 dark:text-slate-400">
+            <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
+            <p className="text-xs font-mono">Fetching development history from Supabase...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 max-w-xl mx-auto text-center space-y-2 my-8">
+            <AlertCircle className="w-6 h-6 mx-auto text-rose-500" />
+            <h4 className="font-heading font-bold text-sm">Database Connection Notice</h4>
+            <p className="text-xs leading-relaxed">{error}</p>
+          </div>
+        )}
+
         {/* Timeline List */}
-        <div className="max-w-3xl mx-auto relative border-l-2 border-slate-200 dark:border-slate-800 ml-4 sm:ml-8 pl-6 sm:pl-8 space-y-12">
-          {experiences.map((exp, idx) => (
+        {!loading && !error && (
+          <div className="max-w-3xl mx-auto relative border-l-2 border-slate-200 dark:border-slate-800 ml-4 sm:ml-8 pl-6 sm:pl-8 space-y-12">
+            {experiences.map((exp, idx) => (
             <motion.div
               key={exp.id || idx}
               initial={{ opacity: 0, x: -20 }}
@@ -80,6 +127,7 @@ export default function Experience({ experiences = INITIAL_EXPERIENCE }) {
             </motion.div>
           ))}
         </div>
+        )}
 
       </div>
     </section>

@@ -1,9 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, Calendar, Award } from 'lucide-react';
-import { INITIAL_EDUCATION } from '../lib/data';
+import { GraduationCap, Calendar, Award, Loader2, AlertCircle } from 'lucide-react';
+import { fetchEducation } from '../lib/api';
 
-export default function Education({ educationList = INITIAL_EDUCATION }) {
+export default function Education() {
+  const [educationList, setEducationList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchEducation();
+        if (isMounted) {
+          setEducationList(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load education records from Supabase.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   return (
     <section id="education" className="py-24 relative bg-slate-100/50 dark:bg-slate-900/40">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,9 +51,27 @@ export default function Education({ educationList = INITIAL_EDUCATION }) {
           </p>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-16 space-y-3 text-slate-500 dark:text-slate-400">
+            <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
+            <p className="text-xs font-mono">Fetching academic records from Supabase...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 max-w-xl mx-auto text-center space-y-2 my-8">
+            <AlertCircle className="w-6 h-6 mx-auto text-rose-500" />
+            <h4 className="font-heading font-bold text-sm">Database Connection Notice</h4>
+            <p className="text-xs leading-relaxed">{error}</p>
+          </div>
+        )}
+
         {/* Education List */}
-        <div className="max-w-3xl mx-auto space-y-6">
-          {educationList.map((edu, idx) => (
+        {!loading && !error && (
+          <div className="max-w-3xl mx-auto space-y-6">
+            {educationList.map((edu, idx) => (
             <motion.div
               key={edu.id || idx}
               initial={{ opacity: 0, y: 20 }}
@@ -62,6 +109,7 @@ export default function Education({ educationList = INITIAL_EDUCATION }) {
             </motion.div>
           ))}
         </div>
+        )}
 
       </div>
     </section>
