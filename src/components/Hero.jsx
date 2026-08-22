@@ -1,0 +1,214 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FileText, ArrowRight, Github, Linkedin, Mail, Code2, Database, Terminal, Sparkles } from 'lucide-react';
+import { PROFILE_DATA } from '../lib/data';
+
+export default function Hero({ profile = PROFILE_DATA, onOpenTerminal }) {
+  const roles = [
+    "Java Backend / Full-Stack Developer",
+    "Spring Boot & PostgreSQL Engineer",
+    "Data Analytics & Engineering Enthusiast",
+    "Software Engineer | SKNCOE Graduate (2027)"
+  ];
+  
+  const [roleIdx, setRoleIdx] = useState(0);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentRole = roles[roleIdx];
+    let speed = isDeleting ? 30 : 70;
+
+    if (!isDeleting && displayedText === currentRole) {
+      speed = 2000;
+    } else if (isDeleting && displayedText === '') {
+      speed = 300;
+    }
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        if (displayedText.length < currentRole.length) {
+          setDisplayedText(currentRole.substring(0, displayedText.length + 1));
+        } else {
+          setIsDeleting(true);
+        }
+      } else {
+        if (displayedText.length > 0) {
+          setDisplayedText(currentRole.substring(0, displayedText.length - 1));
+        } else {
+          setIsDeleting(false);
+          setRoleIdx((prev) => (prev + 1) % roles.length);
+        }
+      }
+    }, speed);
+
+    return () => clearTimeout(timer);
+  }, [displayedText, isDeleting, roleIdx]);
+  return (
+    <section id="hero" className="min-h-screen pt-28 sm:pt-36 pb-16 flex items-center relative overflow-hidden">
+      {/* Background Subtle Gradient Spheres */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-500/10 dark:bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-[350px] h-[350px] bg-indigo-500/10 dark:bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          {/* Main Hero Text Content */}
+          <div className="lg:col-span-8 space-y-6 text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 dark:bg-sky-400/10 border border-sky-500/20 text-sky-700 dark:text-sky-300 text-xs font-mono font-medium"
+            >
+              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+              Open to Software Engineering Opportunities
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="space-y-3"
+            >
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.15]">
+                {profile.name || "Abhay Dilip Kharat"}
+              </h1>
+              
+              <h2 className="text-xl sm:text-2xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 dark:from-sky-400 dark:via-blue-400 dark:to-indigo-400 min-h-[36px] flex items-center">
+                <span>{displayedText}</span>
+                <span className="w-0.5 h-6 ml-1 bg-sky-500 animate-pulse inline-block" />
+              </h2>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed"
+            >
+              Building scalable Java Spring Boot backend services and responsive React applications. Passionate about computer science fundamentals, high-performance database architectures, and exploring <span className="font-semibold text-slate-900 dark:text-slate-100">Data Analytics & Data Engineering</span>.
+            </motion.p>
+
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-wrap items-center gap-4 pt-2"
+            >
+              <a
+                href="#projects"
+                className="px-6 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-heading font-semibold text-sm shadow-lg shadow-sky-600/25 hover:shadow-sky-600/40 transition-all flex items-center gap-2 group"
+              >
+                <span>View Projects</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </a>
+
+              <a
+                href={profile.resumeUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-heading font-semibold text-sm border border-slate-300 dark:border-slate-800 transition-all flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4 text-sky-500" />
+                <span>Resume</span>
+              </a>
+
+              <div className="flex items-center gap-2 ml-2 sm:ml-4">
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800"
+                  aria-label="GitHub Profile"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800"
+                  aria-label="LinkedIn Profile"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800"
+                  aria-label="Send Email"
+                >
+                  <Mail className="w-5 h-5" />
+                </a>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Visual 3D Glassmorphism Card / Profile Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-4"
+          >
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:shadow-sky-500/15 hover:-translate-y-1 hover:rotate-1 transition-all duration-300 space-y-6 group">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform">
+                  AK
+                </div>
+                <div>
+                  <h3 className="font-heading font-bold text-slate-900 dark:text-white text-base">
+                    Abhay Dilip Kharat
+                  </h3>
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                    B.E. ENTC | SKNCOE
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
+                  <Code2 className="w-4 h-4 text-sky-500 shrink-0" />
+                  <span>Java 21, Spring Boot, React, SQL</span>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
+                  <Database className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span>PostgreSQL, HikariCP, REST APIs</span>
+                </div>
+              </div>
+
+              {/* CLI Shell Launcher Badge */}
+              {onOpenTerminal && (
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <button
+                    onClick={onOpenTerminal}
+                    className="w-full py-2.5 px-3 rounded-xl bg-slate-950 text-sky-400 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all font-mono text-xs flex items-center justify-between group/term shadow-inner"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Terminal className="w-3.5 h-3.5 text-sky-400" />
+                      <span>Launch Developer Shell</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 group-hover/term:text-sky-400 transition-colors">abhay@portfolio:~$</span>
+                  </button>
+                </div>
+              )}
+
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 grid grid-cols-2 gap-3 text-center">
+                <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60">
+                  <span className="block font-heading font-bold text-sky-600 dark:text-sky-400 text-lg">3+</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Core Projects</span>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60">
+                  <span className="block font-heading font-bold text-sky-600 dark:text-sky-400 text-lg">2027</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Graduation</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
