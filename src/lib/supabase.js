@@ -1,14 +1,14 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
-export const isSupabaseConfigured = Boolean(
-  supabaseUrl && 
-  supabaseAnonKey && 
-  !supabaseUrl.includes('your-supabase-project')
-);
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabasePublishableKey)
+
+if (!supabaseUrl || !supabasePublishableKey) {
+  console.warn('Missing Supabase environment variables')
+}
 
 export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+  ? createClient(supabaseUrl, supabasePublishableKey)
+  : null

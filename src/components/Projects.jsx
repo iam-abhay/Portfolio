@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FolderGit2, ExternalLink, Github, X } from 'lucide-react';
-import { INITIAL_PROJECTS } from '../lib/data';
+import { FolderGit2, ExternalLink, Github, X, Loader2, AlertCircle } from 'lucide-react';
+import { fetchProjects } from '../lib/api';
 import ProjectCard from './ProjectCard';
 
-export default function Projects({ projectsList = INITIAL_PROJECTS }) {
+export default function Projects() {
+  const [projectsList, setProjectsList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchProjects();
+        if (isMounted) {
+          setProjectsList(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load projects from Supabase.');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const categories = [
     'All',
@@ -63,21 +92,42 @@ export default function Projects({ projectsList = INITIAL_PROJECTS }) {
           ))}
         </div>
 
-        {/* Project Grid using ProjectCard component */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, idx) => (
-            <ProjectCard
-              key={project.id || idx}
-              project={project}
-              onSelect={setSelectedProject}
-            />
-          ))}
-        </div>
-
-        {filteredProjects.length === 0 && (
-          <div className="text-center py-12 text-slate-500 dark:text-slate-400 text-sm">
-            No published projects found under '{activeCategory}'. Check back soon for new project additions!
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-16 space-y-3 text-slate-500 dark:text-slate-400">
+            <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
+            <p className="text-xs font-mono">Fetching published projects from Supabase...</p>
           </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 max-w-xl mx-auto text-center space-y-2 my-8">
+            <AlertCircle className="w-6 h-6 mx-auto text-rose-500" />
+            <h4 className="font-heading font-bold text-sm">Database Connection Notice</h4>
+            <p className="text-xs leading-relaxed">{error}</p>
+          </div>
+        )}
+
+        {/* Project Grid using ProjectCard component */}
+        {!loading && !error && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProjects.map((project, idx) => (
+                <ProjectCard
+                  key={project.id || idx}
+                  project={project}
+                  onSelect={setSelectedProject}
+                />
+              ))}
+            </div>
+
+            {filteredProjects.length === 0 && (
+              <div className="text-center py-12 text-slate-500 dark:text-slate-400 text-sm">
+                No published projects found under '{activeCategory}'. Check back soon for new project additions!
+              </div>
+            )}
+          </>
         )}
 
       </div>
