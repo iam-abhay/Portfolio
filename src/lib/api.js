@@ -1,6 +1,43 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 
 /**
+ * Fetch public profile record from Supabase and map fields to frontend consumer shape.
+ */
+export async function fetchProfile() {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client is not configured. Please check environment variables.');
+  }
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .limit(1)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new Error('No profile record found in Supabase.');
+  }
+
+  return {
+    name: data.name,
+    headline: data.headline,
+    subtext: data.short_bio,
+    about: data.about,
+    email: data.email,
+    phone: data.phone,
+    github: data.github_url,
+    linkedin: data.linkedin_url,
+    resumeUrl: data.resume_url || '#',
+    profileImageUrl: data.profile_image_url || null,
+    location: 'Pune, India | Open to Remote & Relocation',
+  };
+}
+
+/**
  * Fetch published projects from Supabase ordered by display_order.
  * Returns normalized array of projects matching UI component shape.
  */

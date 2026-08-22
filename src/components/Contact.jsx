@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, MapPin, Copy, Check, Send } from 'lucide-react';
-import { PROFILE_DATA } from '../lib/data';
 
-export default function Contact({ profile = PROFILE_DATA }) {
+export default function Contact({ profile }) {
   const [copied, setCopied] = useState(false);
   const [formSent, setFormSent] = useState(false);
 

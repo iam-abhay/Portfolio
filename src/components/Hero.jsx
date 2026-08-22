@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, ArrowRight, Github, Linkedin, Mail, Code2, Database, Terminal, Sparkles } from 'lucide-react';
-import { PROFILE_DATA } from '../lib/data';
 
-export default function Hero({ profile = PROFILE_DATA, onOpenTerminal }) {
+export default function Hero({ profile, onOpenTerminal }) {
   const roles = [
     "Java Backend / Full-Stack Developer",
     "Spring Boot & PostgreSQL Engineer",

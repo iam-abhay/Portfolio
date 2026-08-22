@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, X, Minimize2, Maximize2, Send, CornerDownLeft } from 'lucide-react';
-import { PROFILE_DATA, INITIAL_PROJECTS, SKILL_CATEGORIES } from '../lib/data';
+import { INITIAL_PROJECTS, SKILL_CATEGORIES } from '../lib/data';
 
-export default function TerminalModal({ isOpen, onClose }) {
+export default function TerminalModal({ isOpen, onClose, profile }) {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
     { type: 'system', text: 'Abhay Kharat Developer Shell v2.5.0 [x86_64-pc-linux-gnu]' },
@@ -45,7 +45,7 @@ export default function TerminalModal({ isOpen, onClose }) {
       case 'about':
         newHistory.push({
           type: 'output',
-          text: `${PROFILE_DATA.name} | ${PROFILE_DATA.headline}\n\n${PROFILE_DATA.about}`
+          text: `${profile?.name || 'Abhay Kharat'} | ${profile?.headline || ''}\n\n${profile?.about || ''}`
         });
         break;
 
@@ -66,7 +66,7 @@ export default function TerminalModal({ isOpen, onClose }) {
       case 'contact':
         newHistory.push({
           type: 'output',
-          text: `Email:    ${PROFILE_DATA.email}\nGitHub:   ${PROFILE_DATA.github}\nLinkedIn: ${PROFILE_DATA.linkedin}\nLocation: ${PROFILE_DATA.location}`
+          text: `Email:    ${profile?.email || ''}\nGitHub:   ${profile?.github || ''}\nLinkedIn: ${profile?.linkedin || ''}\nLocation: ${profile?.location || ''}`
         });
         break;
 

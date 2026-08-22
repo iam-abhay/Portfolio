@@ -1,8 +1,7 @@
 import React from 'react';
 import { Github, Linkedin, ArrowUp } from 'lucide-react';
-import { PROFILE_DATA } from '../lib/data';
 
-export default function Footer({ profile = PROFILE_DATA }) {
+export default function Footer({ profile }) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

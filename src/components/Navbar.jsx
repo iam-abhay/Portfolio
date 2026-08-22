@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon, Github, Linkedin, Menu, X, Terminal } from 'lucide-react';
-import { PROFILE_DATA } from '../lib/data';
 
-export default function Navbar({ onOpenTerminal }) {
+export default function Navbar({ profile, onOpenTerminal }) {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -85,7 +84,7 @@ export default function Navbar({ onOpenTerminal }) {
           </button>
 
           <a
-            href={PROFILE_DATA.github}
+            href={profile?.github || '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800 hidden sm:flex"
@@ -95,7 +94,7 @@ export default function Navbar({ onOpenTerminal }) {
           </a>
 
           <a
-            href={PROFILE_DATA.linkedin}
+            href={profile?.linkedin || '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800 hidden sm:flex"
@@ -130,7 +129,7 @@ export default function Navbar({ onOpenTerminal }) {
           ))}
           <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center gap-4">
             <a
-              href={PROFILE_DATA.github}
+              href={profile?.github || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500"
@@ -138,7 +137,7 @@ export default function Navbar({ onOpenTerminal }) {
               <Github className="w-4 h-4" /> GitHub
             </a>
             <a
-              href={PROFILE_DATA.linkedin}
+              href={profile?.linkedin || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500"

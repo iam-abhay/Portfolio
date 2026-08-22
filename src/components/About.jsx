@@ -1,9 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { User, Server, Code, Database, LineChart, CheckCircle2 } from 'lucide-react';
-import { PROFILE_DATA } from '../lib/data';
 
-export default function About({ profile = PROFILE_DATA }) {
+export default function About({ profile }) {
   const highlights = [
     {
       icon: Server,

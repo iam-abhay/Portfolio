@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Star, GitFork, ExternalLink, Code2 } from 'lucide-react';
-import { PROFILE_DATA } from '../lib/data';
 
-export default function GitHubSection({ profile = PROFILE_DATA }) {
+export default function GitHubSection({ profile }) {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
 
