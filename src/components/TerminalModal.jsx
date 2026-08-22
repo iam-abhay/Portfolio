@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, X, Minimize2, Maximize2, Send, CornerDownLeft } from 'lucide-react';
-import { INITIAL_PROJECTS, SKILL_CATEGORIES } from '../lib/data';
+import { Terminal, X, CornerDownLeft } from 'lucide-react';
+import { fetchProjects, fetchSkills } from '../lib/api';
 
 export default function TerminalModal({ isOpen, onClose, profile }) {
   const [input, setInput] = useState('');
+  const [projectsList, setProjectsList] = useState([]);
+  const [skillsList, setSkillsList] = useState([]);
+  const [dataLoading, setDataLoading] = useState(false);
   const [history, setHistory] = useState([
     { type: 'system', text: 'Abhay Kharat Developer Shell v2.5.0 [x86_64-pc-linux-gnu]' },
     { type: 'system', text: 'Type "help" to list available interactive commands.' }
@@ -14,6 +17,30 @@ export default function TerminalModal({ isOpen, onClose, profile }) {
   useEffect(() => {
     if (isOpen) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      let isMounted = true;
+      async function loadCliData() {
+        try {
+          setDataLoading(true);
+          const [projData, skillData] = await Promise.all([
+            fetchProjects(),
+            fetchSkills()
+          ]);
+          if (isMounted) {
+            setProjectsList(projData);
+            setSkillsList(skillData);
+          }
+        } catch (err) {
+          console.warn('Failed to load CLI datasets from Supabase', err);
+        } finally {
+          if (isMounted) {
+            setDataLoading(false);
+          }
+        }
+      }
+      loadCliData();
+      return () => {
+        isMounted = false;
+      };
     }
   }, [history, isOpen]);
 
@@ -50,17 +77,29 @@ export default function TerminalModal({ isOpen, onClose, profile }) {
         break;
 
       case 'skills':
-        const skillText = SKILL_CATEGORIES.map(
-          cat => `\x1b[1m[${cat.name}]\x1b[0m: ${cat.skills.join(', ')}`
-        ).join('\n');
-        newHistory.push({ type: 'output', text: skillText });
+        if (dataLoading && skillsList.length === 0) {
+          newHistory.push({ type: 'output', text: 'Fetching live skills from Supabase...' });
+        } else if (skillsList.length === 0) {
+          newHistory.push({ type: 'output', text: 'No visible skills found.' });
+        } else {
+          const skillText = skillsList.map(
+            cat => `[${cat.name}]: ${(cat.skills || []).join(', ')}`
+          ).join('\n');
+          newHistory.push({ type: 'output', text: skillText });
+        }
         break;
 
       case 'projects':
-        const projText = INITIAL_PROJECTS.map(
-          (p, i) => `${i + 1}. ${p.title} (${p.category})\n   Stack: ${p.technologies.join(', ')}\n   URL: ${p.github_url}`
-        ).join('\n\n');
-        newHistory.push({ type: 'output', text: projText });
+        if (dataLoading && projectsList.length === 0) {
+          newHistory.push({ type: 'output', text: 'Fetching live projects from Supabase...' });
+        } else if (projectsList.length === 0) {
+          newHistory.push({ type: 'output', text: 'No published projects found.' });
+        } else {
+          const projText = projectsList.map(
+            (p, i) => `${i + 1}. ${p.title} (${p.category})\n   Stack: ${(p.technologies || []).join(', ')}\n   URL: ${p.github_url}`
+          ).join('\n\n');
+          newHistory.push({ type: 'output', text: projText });
+        }
         break;
 
       case 'contact':
