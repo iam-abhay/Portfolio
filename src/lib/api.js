@@ -168,3 +168,26 @@ export async function fetchEducation() {
     };
   });
 }
+
+/**
+ * Fetch certification records from Supabase
+ */
+export async function fetchCertifications() {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Supabase client is not configured. Please check environment variables.');
+  }
+
+  const { data, error } = await supabase
+    .from('certifications')
+    .select('*')
+    .order('display_order', { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []).map((cert) => ({
+    ...cert,
+    date: cert.date || 'Certified',
+  }));
+}
