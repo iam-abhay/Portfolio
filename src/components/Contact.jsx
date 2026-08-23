@@ -28,17 +28,23 @@ export default function Contact({ profile }) {
     const formData = new FormData(formRef.current);
     const name = formData.get('from_name');
     const email = formData.get('from_email');
-    const role = formData.get('sender_role');
     const subject = formData.get('subject');
     const message = formData.get('message');
 
     // If EmailJS public key is configured, send via EmailJS
     if (EMAILJS_PUBLIC_KEY) {
       try {
-        await emailjs.sendForm(
+        const templateParams = {
+          from_name: name,
+          from_email: email,
+          subject: subject,
+          message: message,
+        };
+
+        await emailjs.send(
           EMAILJS_SERVICE_ID,
           EMAILJS_TEMPLATE_ID,
-          formRef.current,
+          templateParams,
           EMAILJS_PUBLIC_KEY
         );
         setFormStatus('sent');
@@ -54,7 +60,7 @@ export default function Contact({ profile }) {
       // Fallback: open mailto link with pre-filled content
       const mailtoSubject = encodeURIComponent(`[Portfolio Contact] ${subject}`);
       const mailtoBody = encodeURIComponent(
-        `Name: ${name}\nRole: ${role}\nEmail: ${email}\n\nSubject: ${subject}\n\nMessage:\n${message}`
+        `Name: ${name}\nEmail: ${email}\n\nSubject: ${subject}\n\nMessage:\n${message}`
       );
       const recipientEmail = profile.email || 'iamabhaykharat@gmail.com';
       window.open(`mailto:${recipientEmail}?subject=${mailtoSubject}&body=${mailtoBody}`, '_blank');
@@ -206,36 +212,17 @@ export default function Contact({ profile }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-heading font-semibold text-slate-700 dark:text-slate-300">
-                    I am a
-                  </label>
-                  <select
-                    name="sender_role"
-                    required
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
-                  >
-                    <option value="HR / Recruiter">HR / Recruiter</option>
-                    <option value="Hiring Manager">Hiring Manager</option>
-                    <option value="Software Engineer">Software Engineer</option>
-                    <option value="Student / Peer">Student / Peer</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-heading font-semibold text-slate-700 dark:text-slate-300">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    name="subject"
-                    required
-                    placeholder="Opportunity Inquiry / Project Discussion"
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-heading font-semibold text-slate-700 dark:text-slate-300">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  name="subject"
+                  required
+                  placeholder="Opportunity Inquiry / Project Discussion"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
+                />
               </div>
 
               <div className="space-y-1.5">

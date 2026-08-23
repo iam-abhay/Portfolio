@@ -79,8 +79,10 @@ export default function Footer({ profile }) {
         </div>
 
         <div className="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2">
-          <p>&copy; {new Date().getFullYear()} Abhay Dilip Kharat. All rights reserved.</p>
-          <p className="font-mono">Built with React, Vite, Tailwind CSS & Supabase.</p>
+          <p className="flex items-center gap-1">
+            Made with <span className="text-rose-500 animate-pulse">❤️</span> by Abhay Dilip Kharat &copy; {new Date().getFullYear()}
+          </p>
+          <p className="font-mono">Crafted with React, Vite & Supabase</p>
         </div>
 
       </div>
