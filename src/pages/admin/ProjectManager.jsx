@@ -104,6 +104,7 @@ export default function ProjectManager() {
 
     setError('');
     setSelectedFile(file);
+    setImageUrl(''); // Clear text URL when device file is chosen
     if (filePreview) URL.revokeObjectURL(filePreview);
     setFilePreview(URL.createObjectURL(file));
     setUploadNotice(`File selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB). Will upload on save.`);
@@ -326,7 +327,7 @@ export default function ProjectManager() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs text-slate-300">Project Title</label>
@@ -395,7 +396,7 @@ export default function ProjectManager() {
               <div className="space-y-1">
                 <label className="text-xs text-slate-300">GitHub URL</label>
                 <input
-                  type="url"
+                  type="text"
                   value={githubUrl}
                   onChange={e => setGithubUrl(e.target.value)}
                   placeholder="https://github.com/iam-abhay/..."
@@ -406,7 +407,7 @@ export default function ProjectManager() {
               <div className="space-y-1">
                 <label className="text-xs text-slate-300">Live Demo URL</label>
                 <input
-                  type="url"
+                  type="text"
                   value={liveUrl}
                   onChange={e => setLiveUrl(e.target.value)}
                   placeholder="https://..."
@@ -485,7 +486,7 @@ export default function ProjectManager() {
                 <div className="space-y-1">
                   <span className="text-[11px] text-slate-400 font-medium">Method 2: Or External HTTPS URL</span>
                   <input
-                    type="url"
+                    type="text"
                     value={imageUrl}
                     onChange={e => {
                       setImageUrl(e.target.value);
