@@ -1,0 +1,604 @@
+{
+  "timestamp": "2026-08-23T14:22:42.974Z",
+  "profile": {
+    "id": "efa9bd86-6599-4f86-a39c-7edc7d1e188c",
+    "name": "Abhay Kharat",
+    "headline": "Aspiring Software Engineer | Java Backend & Full-Stack Developer",
+    "short_bio": "Hands-on experience in Java, Spring Boot, React.js, PostgreSQL, and REST APIs. Strong foundation in OOP, DSA, DBMS, and JWT Authentication with familiarity in Docker, Microservices, and Kafka.",
+    "about": "Aspiring Software Engineer with hands-on experience in Java, Spring Boot, React.js, PostgreSQL, REST APIs, and Full-Stack Development through academic projects and internship experience. \r\n\r\nStrong foundation in OOP, Data Structures & Algorithms, DBMS, Git, and JWT Authentication, with familiarity in Apache Kafka, Docker, Kubernetes, CI/CD concepts, and Microservices architecture. Driven to build scalable, high-performance software applications and web platforms.",
+    "email": "abhaykharat.er@gmail.com",
+    "phone": "+91-8888537005",
+    "github_url": "https://github.com/iam-abhay",
+    "linkedin_url": "https://linkedin.com/in/abhay-kharat",
+    "resume_url": "#",
+    "profile_image_url": null,
+    "created_at": "2026-08-22T18:46:41.958243+00:00",
+    "updated_at": "2026-08-22T18:46:41.958243+00:00"
+  },
+  "projects": [
+    {
+      "id": "3bf304b4-f24c-4beb-b7ec-1a4afbf01d04",
+      "title": "AgriEase – AI-Powered Smart Agriculture Platform",
+      "slug": "agriease",
+      "category": "Software Engineering",
+      "short_description": "Full-stack web application connecting farmers and suppliers through equipment rental and marketplace services with JWT security and Spring Boot REST APIs.",
+      "description": "Developed a full-stack web application connecting farmers and suppliers through equipment rental and marketplace services. Implemented secure JWT authentication, role-based access control, and RESTful APIs using Spring Boot. Built responsive React.js interfaces, integrated PostgreSQL for efficient data management, and utilized Git for version control while following OOP principles and layered architecture.",
+      "technologies": [
+        "Java",
+        "Spring Boot",
+        "React.js",
+        "PostgreSQL",
+        "JWT",
+        "REST APIs",
+        "Git"
+      ],
+      "github_url": "https://github.com/iam-abhay",
+      "live_url": "https://github.com/iam-abhay",
+      "image_url": "https://lwjvcfttycctwygkuoji.supabase.co/storage/v1/object/public/portfolio-images/projects/1787492237730-5qly29w.png",
+      "featured": true,
+      "published": true,
+      "display_order": 1,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-23T13:37:19.193+00:00"
+    },
+    {
+      "id": "6ae26c46-f400-48e1-952e-670325e4de0a",
+      "title": "MoodFlix – Mood-Based Movie Recommendation System",
+      "slug": "moodflix",
+      "category": "Software Engineering",
+      "short_description": "JavaFX desktop application that recommends movies based on user mood with Java Collections Framework, PostgreSQL, HikariCP, and Firebase Firestore.",
+      "description": "Developed a JavaFX desktop application that recommends movies based on user mood. Applied OOP principles and the Java Collections Framework to build a modular application, integrated REST APIs, OMDb API, PostgreSQL connection pooling with HikariCP, and Firebase Firestore for cloud-based data storage, and designed an intuitive user interface to enhance user experience.",
+      "technologies": [
+        "Java",
+        "JavaFX",
+        "PostgreSQL",
+        "OMDb API",
+        "HikariCP",
+        "Firebase Firestore",
+        "REST APIs",
+        "OOP"
+      ],
+      "github_url": "https://github.com/iam-abhay",
+      "live_url": "https://github.com/iam-abhay",
+      "image_url": "assets/images/project-dev-platform.jpg",
+      "featured": true,
+      "published": true,
+      "display_order": 2,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "97265595-a746-4eb4-aa99-33cad7c0ff35",
+      "title": "ApnaGhar – Real Estate Listing Website",
+      "slug": "apnaghar",
+      "category": "Software Engineering",
+      "short_description": "Responsive real estate listing platform using React.js with property browsing, filtering features, and component-based architecture.",
+      "description": "Developed a responsive real estate listing platform using React.js with reusable UI components and responsive layouts. Implemented property browsing and filtering features, followed component-based architecture and clean coding practices, and used Git for version control to improve maintainability and user experience.",
+      "technologies": [
+        "React.js",
+        "JavaScript",
+        "HTML5",
+        "CSS3",
+        "Git"
+      ],
+      "github_url": "https://github.com/iam-abhay",
+      "live_url": "https://github.com/iam-abhay",
+      "image_url": "assets/images/project-cyber-shop.jpg",
+      "featured": true,
+      "published": true,
+      "display_order": 3,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    }
+  ],
+  "skills": [
+    {
+      "id": "684108dc-a50e-496f-b323-e8a418e8e2c9",
+      "name": "AI-Assisted Coding",
+      "category": "AI-Assisted Development",
+      "display_order": 31,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "b3e4c326-3103-4523-8d87-9046ead954ed",
+      "name": "AI-Powered Debugging",
+      "category": "AI-Assisted Development",
+      "display_order": 34,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "95441c0c-0844-41b6-915a-00e0e1ab4cb0",
+      "name": "Apache Kafka",
+      "category": "Backend Development",
+      "display_order": 11,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "c4d248bf-8498-4849-8b50-dd73e4cb364b",
+      "name": "C",
+      "category": "Programming Languages",
+      "display_order": 4,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "6b01a811-bf76-4cfb-89a2-9430259c9f4f",
+      "name": "ChatGPT",
+      "category": "AI-Assisted Development",
+      "display_order": 33,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "eba6ffac-80f2-4458-9870-39ea05cb844d",
+      "name": "CI/CD Concepts",
+      "category": "Cloud & DevOps",
+      "display_order": 23,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "8675b6e6-eb88-43c5-83aa-3bd8a3199c5e",
+      "name": "Computer Networks",
+      "category": "Core CS Concepts",
+      "display_order": 39,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "330abed1-18c8-46ec-bb05-765cb7041b6f",
+      "name": "CSS3",
+      "category": "Frontend Development",
+      "display_order": 15,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "933958b5-cee3-437e-bd58-48ad60144b6b",
+      "name": "Data Structures & Algorithms (DSA)",
+      "category": "Core CS Concepts",
+      "display_order": 36,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "ec20cdf6-8d06-47b2-b0ee-be787f8b16f9",
+      "name": "DBMS",
+      "category": "Core CS Concepts",
+      "display_order": 37,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "c7a56aec-9fbf-4bfa-b67d-906afb493a49",
+      "name": "Docker",
+      "category": "Cloud & DevOps",
+      "display_order": 21,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "90707a99-30ed-42d2-877f-2b86ecca4140",
+      "name": "Firebase Firestore",
+      "category": "Database",
+      "display_order": 20,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "6ccc4cd8-7b82-427d-8985-ab47b90d8dd7",
+      "name": "Git",
+      "category": "Tools & IDEs",
+      "display_order": 24,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "08fcf656-2c4c-4ffe-bd60-ce3ef58b7acf",
+      "name": "GitHub",
+      "category": "Tools & IDEs",
+      "display_order": 25,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "75844aa6-441f-499d-9d77-651303f1c44f",
+      "name": "GitHub Copilot",
+      "category": "AI-Assisted Development",
+      "display_order": 32,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "26707d05-1a1e-47b8-b8c1-dc5815efedbc",
+      "name": "HTML5",
+      "category": "Frontend Development",
+      "display_order": 14,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "6a126416-cf2c-4fbb-a066-6152116ce979",
+      "name": "IntelliJ IDEA",
+      "category": "Tools & IDEs",
+      "display_order": 29,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "ab2e5cbe-c038-4ef2-b93c-c913db66373a",
+      "name": "Java",
+      "category": "Programming Languages",
+      "display_order": 1,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "5a99f447-6c36-423d-a376-a52e77b92ecf",
+      "name": "Java Collections Framework",
+      "category": "Backend Development",
+      "display_order": 12,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "7ab9c370-9748-44b6-8f9e-218f4e07d25d",
+      "name": "JavaScript",
+      "category": "Programming Languages",
+      "display_order": 2,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "4853168f-443d-493e-b058-992152ff5ed4",
+      "name": "JDBC",
+      "category": "Backend Development",
+      "display_order": 7,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "6994c225-5305-4c21-9a88-1233cabfbcc2",
+      "name": "JWT Authentication",
+      "category": "Backend Development",
+      "display_order": 8,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "3b97db06-6052-473f-8f0f-f942d088394d",
+      "name": "Kubernetes",
+      "category": "Cloud & DevOps",
+      "display_order": 22,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "286b0ec5-7a06-4242-a7ff-374ab038027e",
+      "name": "Maven",
+      "category": "Tools & IDEs",
+      "display_order": 26,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "a6864210-2c2e-45ee-aaac-afa51e44d3db",
+      "name": "Microservices",
+      "category": "Backend Development",
+      "display_order": 10,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "47a48757-5b16-4a01-a6c7-22d8de799a7e",
+      "name": "MySQL",
+      "category": "Database",
+      "display_order": 19,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "59c318f7-7431-4ae7-9bc1-05c5e6768d3f",
+      "name": "Node.js",
+      "category": "Backend Development",
+      "display_order": 9,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "b01137eb-0ab9-41fc-ae4c-d7f7a69a79da",
+      "name": "Object Oriented Programming (OOP)",
+      "category": "Core CS Concepts",
+      "display_order": 35,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "74fc1837-d83d-407a-9ff3-a16b9d938ee4",
+      "name": "Operating Systems",
+      "category": "Core CS Concepts",
+      "display_order": 38,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "eb78a4d0-db86-4ebb-a002-9cb27fdb74cd",
+      "name": "PostgreSQL",
+      "category": "Database",
+      "display_order": 18,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "89812804-c9f9-4b80-8461-ff3ccbeacd00",
+      "name": "Postman",
+      "category": "Tools & IDEs",
+      "display_order": 27,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "6f85672d-f7ec-4de4-9abb-7997a2a070f3",
+      "name": "Prompt Engineering",
+      "category": "AI-Assisted Development",
+      "display_order": 30,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "76b19353-1ec8-404c-86ae-31f90dba9e4c",
+      "name": "Python",
+      "category": "Programming Languages",
+      "display_order": 42,
+      "visible": true,
+      "created_at": "2026-08-23T12:59:20.354+00:00",
+      "updated_at": "2026-08-23T12:59:19.473128+00:00"
+    },
+    {
+      "id": "a22d49f4-838e-43ec-8f4c-1560fa0b7808",
+      "name": "React.js",
+      "category": "Frontend Development",
+      "display_order": 13,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "3f4ee55a-79f0-467a-89f2-0f086f2538d5",
+      "name": "Responsive Web Design",
+      "category": "Frontend Development",
+      "display_order": 16,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "bf3e2117-e268-4889-897b-d61eb5fe9abb",
+      "name": "REST APIs",
+      "category": "Backend Development",
+      "display_order": 6,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "a221a7f5-14a7-4bde-8086-ab129837888c",
+      "name": "Software Engineering",
+      "category": "Core CS Concepts",
+      "display_order": 40,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "934909f1-fefc-45fd-ab36-43d81d8d285a",
+      "name": "Spring Boot",
+      "category": "Backend Development",
+      "display_order": 5,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "7ee8db96-f8d7-4771-b27c-64334b424f2d",
+      "name": "SQL",
+      "category": "Programming Languages",
+      "display_order": 3,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "3532bfe4-7639-421a-9ee8-b3d07b691387",
+      "name": "SQL",
+      "category": "Database",
+      "display_order": 17,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "6fdcb9c0-1974-475e-9610-e9a17f7e941f",
+      "name": "System Design",
+      "category": "Core CS Concepts",
+      "display_order": 41,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "18ebce7e-d302-486c-9f24-78d6db0a112b",
+      "name": "VS Code",
+      "category": "Tools & IDEs",
+      "display_order": 28,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    }
+  ],
+  "experience": [
+    {
+      "id": "db2ac360-53e9-47c8-8b8f-1239e114ba70",
+      "company": "Mass IT Solutions, Pune",
+      "position": "Web Developer Intern",
+      "location": "Pune, India",
+      "start_date": "2025-01-01",
+      "end_date": "2025-02-01",
+      "current": false,
+      "description": "Developed responsive web applications using HTML, CSS, JavaScript, and React.js, focusing on clean UI design and cross-device compatibility. Built reusable React components and collaborated with mentors to implement frontend features following software development best practices. Performed debugging, testing, and UI optimization to improve application usability, responsiveness, and overall user experience. Developed a Real Estate Listing Website featuring property browsing, responsive layouts, and interactive user interfaces using React.js.",
+      "technologies": [
+        "React.js",
+        "JavaScript",
+        "HTML5",
+        "CSS3",
+        "Web Development"
+      ],
+      "display_order": 1,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    }
+  ],
+  "education": [
+    {
+      "id": "36b1cf76-6265-4f4b-9770-0dfb2535a372",
+      "institution": "Shrimati Kashibai Navale College of Engineering, Pune",
+      "degree": "Bachelor of Engineering (B.E.)",
+      "branch": "Electronics and Telecommunication Engineering",
+      "start_date": "2022-01-01",
+      "end_date": "2026-06-01",
+      "description": "Academic coursework in Data Structures & Algorithms, Object Oriented Programming, DBMS, Computer Networks, Operating Systems, and Software Engineering. Grade: CGPA: 8.16/10",
+      "display_order": 1,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "09d4977b-ddd3-4f57-9766-db5b929f8302",
+      "institution": "Swami Samarth Jr. Arts & Science College",
+      "degree": "Higher Secondary Certificate (HSC)",
+      "branch": "Science",
+      "start_date": "2018-06-01",
+      "end_date": "2020-05-01",
+      "description": "Completed Higher Secondary Certificate coursework with 92.92% distinction.",
+      "display_order": 2,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "3a5fb5f3-2e39-4698-bd65-c6f941ba92ac",
+      "institution": "Saraswati Bhuvan High School",
+      "degree": "Secondary School Certificate (SSC)",
+      "branch": "General High School",
+      "start_date": "2017-06-01",
+      "end_date": "2018-05-01",
+      "description": "Completed Secondary School Certificate with 94.60% distinction.",
+      "display_order": 3,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    }
+  ],
+  "certifications": [
+    {
+      "id": "274abdf5-8fac-42dc-9b03-7d2e70fb0b05",
+      "name": "IBM Getting Started with Enterprise Data Science",
+      "issuer": "IBM",
+      "issue_date": "2025-01-01",
+      "credential_url": "#",
+      "image_url": null,
+      "description": "Foundational training in Enterprise Data Science methodologies, data analysis pipelines, and analytics concepts.",
+      "display_order": 3,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "eb5a469a-b72d-45c4-a862-1a14e3c1b6ff",
+      "name": "IBM Journey to Cloud: Envisioning Your Solution",
+      "issuer": "IBM",
+      "issue_date": "2025-01-01",
+      "credential_url": "#",
+      "image_url": null,
+      "description": "Enterprise Cloud architecture concepts, microservices deployment, and cloud solution design.",
+      "display_order": 4,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "a601a291-fb83-45d6-b5e2-17a4e0abb79a",
+      "name": "Java Programming",
+      "issuer": "Core2Web",
+      "issue_date": "2025-01-01",
+      "credential_url": "#",
+      "image_url": null,
+      "description": "In-depth practical training in Java Core concepts, OOP principles, Exception Handling, Collections Framework, and Multithreading.",
+      "display_order": 1,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "d83a5ec8-bf95-40dd-a64c-698e1543e86f",
+      "name": "Super-X Java Project (MoodFlix)",
+      "issuer": "Java Development Track",
+      "issue_date": "2025-01-01",
+      "credential_url": "#",
+      "image_url": null,
+      "description": "Hands-on project certification for architecting and building the MoodFlix JavaFX movie recommendation application.",
+      "display_order": 2,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    }
+  ],
+  "social_links": [
+    {
+      "id": "0408f5ce-ac3c-4cc8-a992-a5269d976243",
+      "platform": "GitHub",
+      "url": "https://github.com/iam-abhay",
+      "display_order": 1,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    },
+    {
+      "id": "221f9e47-db6c-4315-b68c-ef574cb39297",
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/in/abhay-kharat",
+      "display_order": 2,
+      "visible": true,
+      "created_at": "2026-08-22T18:46:41.958243+00:00",
+      "updated_at": "2026-08-22T18:46:41.958243+00:00"
+    }
+  ]
+}
