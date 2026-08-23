@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, GraduationCap, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, GraduationCap, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { fetchAdminEducation, createEducation, updateEducation, deleteEducation } from '../../lib/adminApi';
 
 export default function EduManager() {
@@ -45,6 +45,16 @@ export default function EduManager() {
     setShowForm(false);
   };
 
+  const handleEdit = (edu) => {
+    setEditingEdu(edu);
+    setInstitution(edu.institution || '');
+    setDegree(edu.degree || '');
+    setBranch(edu.branch || '');
+    setStartDate(edu.start_date || edu.startDate || '');
+    setEndDate(edu.end_date || edu.endDate || '');
+    setShowForm(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -58,7 +68,7 @@ export default function EduManager() {
       start_date: startDate,
       end_date: endDate,
       description: null,
-      display_order: education.length + 1,
+      display_order: editingEdu ? editingEdu.display_order : education.length + 1,
     };
 
     try {
@@ -145,7 +155,7 @@ export default function EduManager() {
             placeholder="Institution Name (e.g. Smt. Kashibai Navale College of Engineering)"
             value={institution}
             onChange={e => setInstitution(e.target.value)}
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
@@ -154,7 +164,7 @@ export default function EduManager() {
               placeholder="Degree (e.g. Bachelor of Engineering)"
               value={degree}
               onChange={e => setDegree(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
             <input
               type="text"
@@ -162,7 +172,7 @@ export default function EduManager() {
               placeholder="Branch (e.g. Electronics and Telecommunication)"
               value={branch}
               onChange={e => setBranch(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -171,14 +181,14 @@ export default function EduManager() {
               placeholder="Start Date (e.g. 2022-01-01 or 2022)"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
             <input
               type="text"
               placeholder="End Date (e.g. 2026-06-01 or 2026)"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
           </div>
           <div className="flex justify-end gap-3 pt-2">
@@ -196,7 +206,7 @@ export default function EduManager() {
               className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{saving ? 'Saving...' : 'Save Education'}</span>
+              <span>{saving ? 'Saving...' : editingEdu ? 'Update Education' : 'Save Education'}</span>
             </button>
           </div>
         </form>
@@ -214,9 +224,14 @@ export default function EduManager() {
                 <h3 className="font-bold text-white text-base">{edu.degree} in {edu.branch}</h3>
                 <p className="text-xs text-sky-400">{edu.institution} • {edu.start_date} - {edu.end_date}</p>
               </div>
-              <button onClick={() => handleDelete(edu.id)} className="p-2 text-slate-500 hover:text-red-400">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => handleEdit(edu)} className="p-2 text-slate-500 hover:text-sky-400 transition-colors">
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button onClick={() => handleDelete(edu.id)} className="p-2 text-slate-500 hover:text-red-400 transition-colors">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))
         )}

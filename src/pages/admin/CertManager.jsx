@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Award, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, Award, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { fetchAdminCertifications, createCertification, updateCertification, deleteCertification } from '../../lib/adminApi';
 
 export default function CertManager() {
@@ -43,6 +43,15 @@ export default function CertManager() {
     setShowForm(false);
   };
 
+  const handleEdit = (cert) => {
+    setEditingCert(cert);
+    setName(cert.name || '');
+    setIssuer(cert.issuer || '');
+    setDate(cert.issue_date || cert.date || '');
+    setUrl(cert.credential_url || cert.url || '');
+    setShowForm(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -54,7 +63,7 @@ export default function CertManager() {
       issuer,
       issue_date: date || new Date().toISOString().split('T')[0],
       credential_url: url || '#',
-      display_order: certs.length + 1,
+      display_order: editingCert ? editingCert.display_order : certs.length + 1,
     };
 
     try {
@@ -141,7 +150,7 @@ export default function CertManager() {
             placeholder="Certificate Name (e.g. Java Backend Development)"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
@@ -150,14 +159,14 @@ export default function CertManager() {
               placeholder="Issuing Organization"
               value={issuer}
               onChange={e => setIssuer(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
             <input
               type="text"
               placeholder="Date Issued (e.g. 2025-01-01 or 2025)"
               value={date}
               onChange={e => setDate(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
           </div>
           <input
@@ -165,7 +174,7 @@ export default function CertManager() {
             placeholder="Credential URL (optional)"
             value={url}
             onChange={e => setUrl(e.target.value)}
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
           />
           <div className="flex justify-end gap-3 pt-2">
             <button
@@ -182,7 +191,7 @@ export default function CertManager() {
               className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{saving ? 'Saving...' : 'Save Certification'}</span>
+              <span>{saving ? 'Saving...' : editingCert ? 'Update Certification' : 'Save Certification'}</span>
             </button>
           </div>
         </form>
@@ -200,9 +209,14 @@ export default function CertManager() {
                 <h3 className="font-bold text-white text-base">{cert.name}</h3>
                 <p className="text-xs text-sky-400">{cert.issuer} • {cert.issue_date || cert.date}</p>
               </div>
-              <button onClick={() => handleDelete(cert.id)} className="p-2 text-slate-500 hover:text-red-400">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => handleEdit(cert)} className="p-2 text-slate-500 hover:text-sky-400 transition-colors">
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button onClick={() => handleDelete(cert.id)} className="p-2 text-slate-500 hover:text-red-400 transition-colors">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))
         )}

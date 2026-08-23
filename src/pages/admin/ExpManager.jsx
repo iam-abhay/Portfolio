@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Briefcase, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, Briefcase, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { fetchAdminExperience, createExperience, updateExperience, deleteExperience } from '../../lib/adminApi';
 
 export default function ExpManager() {
@@ -47,6 +47,17 @@ export default function ExpManager() {
     setShowForm(false);
   };
 
+  const handleEdit = (exp) => {
+    setEditingExp(exp);
+    setCompany(exp.company || '');
+    setPosition(exp.position || '');
+    setLocation(exp.location || '');
+    setStartDate(exp.start_date || exp.startDate || '');
+    setEndDate(exp.end_date || exp.endDate || '');
+    setDescription(exp.description || '');
+    setShowForm(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -61,8 +72,8 @@ export default function ExpManager() {
       end_date: endDate || null,
       current: !endDate || endDate.toLowerCase() === 'present',
       description: description || null,
-      technologies: [],
-      display_order: experiences.length + 1,
+      technologies: editingExp ? editingExp.technologies : [],
+      display_order: editingExp ? editingExp.display_order : experiences.length + 1,
     };
 
     try {
@@ -150,7 +161,7 @@ export default function ExpManager() {
               placeholder="Company / Organization"
               value={company}
               onChange={e => setCompany(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
             <input
               type="text"
@@ -158,7 +169,7 @@ export default function ExpManager() {
               placeholder="Position Title (e.g. Java Backend Intern)"
               value={position}
               onChange={e => setPosition(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -167,21 +178,21 @@ export default function ExpManager() {
               placeholder="Location (e.g. Pune, India)"
               value={location}
               onChange={e => setLocation(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
             <input
               type="text"
               placeholder="Start Date (e.g. 2024-01-01 or Jan 2024)"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
             <input
               type="text"
               placeholder="End Date (e.g. Present)"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
             />
           </div>
           <textarea
@@ -189,7 +200,7 @@ export default function ExpManager() {
             placeholder="Responsibilities and technologies used..."
             value={description}
             onChange={e => setDescription(e.target.value)}
-            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs"
+            className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500 resize-none"
           />
           <div className="flex justify-end gap-3 pt-2">
             <button
@@ -206,7 +217,7 @@ export default function ExpManager() {
               className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{saving ? 'Saving...' : 'Save Entry'}</span>
+              <span>{saving ? 'Saving...' : editingExp ? 'Update Entry' : 'Save Entry'}</span>
             </button>
           </div>
         </form>
@@ -225,9 +236,14 @@ export default function ExpManager() {
                 <p className="text-xs text-sky-400">{exp.company} • {exp.start_date} - {exp.end_date || 'Present'}</p>
                 <p className="text-xs text-slate-400">{exp.description}</p>
               </div>
-              <button onClick={() => handleDelete(exp.id)} className="p-2 text-slate-500 hover:text-red-400">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => handleEdit(exp)} className="p-2 text-slate-500 hover:text-sky-400 transition-colors">
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button onClick={() => handleDelete(exp.id)} className="p-2 text-slate-500 hover:text-red-400 transition-colors">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))
         )}
