@@ -25,6 +25,7 @@ export default function ProjectManager() {
   const [imageUrl, setImageUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState('');
+  const [uploadNotice, setUploadNotice] = useState('');
   const [featured, setFeatured] = useState(false);
   const [published, setPublished] = useState(true);
 
@@ -58,6 +59,7 @@ export default function ProjectManager() {
     setSelectedFile(null);
     if (filePreview) URL.revokeObjectURL(filePreview);
     setFilePreview('');
+    setUploadNotice('');
     setFeatured(false);
     setPublished(true);
     setEditingProject(null);
@@ -77,6 +79,7 @@ export default function ProjectManager() {
     setSelectedFile(null);
     if (filePreview) URL.revokeObjectURL(filePreview);
     setFilePreview('');
+    setUploadNotice('');
     setFeatured(Boolean(proj.featured));
     setPublished(Boolean(proj.published));
     setShowForm(true);
@@ -89,11 +92,13 @@ export default function ProjectManager() {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       setError('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.');
+      setUploadNotice('');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       setError('File size exceeds the 5 MB limit.');
+      setUploadNotice('');
       return;
     }
 
@@ -101,13 +106,15 @@ export default function ProjectManager() {
     setSelectedFile(file);
     if (filePreview) URL.revokeObjectURL(filePreview);
     setFilePreview(URL.createObjectURL(file));
+    setUploadNotice(`File selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB). Will upload on save.`);
   };
 
-  const handleRemoveImage = async () => {
+  const handleRemoveImage = () => {
     setImageUrl('');
     setSelectedFile(null);
     if (filePreview) URL.revokeObjectURL(filePreview);
     setFilePreview('');
+    setUploadNotice('');
   };
 
   const handleDelete = async (id) => {
@@ -174,16 +181,19 @@ export default function ProjectManager() {
     try {
       let finalImageUrl = imageUrl ? imageUrl.trim() : null;
 
-      // Handle local file upload if selected
+      // Method 1: If a device file is selected, upload it to Supabase Storage
       if (selectedFile) {
         try {
           const uploadRes = await uploadProjectImage(selectedFile);
+          if (!uploadRes || !uploadRes.publicUrl) {
+            throw new Error('Supabase Storage did not return a valid public URL.');
+          }
           finalImageUrl = uploadRes.publicUrl;
         } catch (uploadErr) {
           throw new Error(`Image upload failed: ${uploadErr.message}`);
         }
       } else if (finalImageUrl) {
-        // Validate URL security if external URL typed
+        // Method 2: External HTTPS URL validation
         if (
           !finalImageUrl.startsWith('https://') &&
           !finalImageUrl.startsWith('assets/') &&
@@ -405,12 +415,13 @@ export default function ProjectManager() {
               </div>
             </div>
 
-            {/* Project Image Management Section */}
+            {/* Project Image Management Section (Dual Method: Device Upload OR External URL) */}
             <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
                   <ImageIcon className="w-4 h-4 text-sky-400" />
                   <span>Project Image</span>
+                  <span className="text-[11px] text-slate-400 font-normal">(Optional)</span>
                 </label>
                 {(activeDisplayImage || selectedFile) && (
                   <button
@@ -423,6 +434,14 @@ export default function ProjectManager() {
                 )}
               </div>
 
+              {/* Status Notice */}
+              {uploadNotice && (
+                <div className="p-2.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-400 text-[11px] flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>{uploadNotice}</span>
+                </div>
+              )}
+
               {/* Image Preview Window */}
               {activeDisplayImage ? (
                 <div className="relative h-40 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center">
@@ -431,24 +450,28 @@ export default function ProjectManager() {
                     alt="Project Preview"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-slate-900/80 text-[10px] font-mono text-slate-300 backdrop-blur">
-                    {selectedFile ? `Upload File: ${selectedFile.name}` : 'Current Image Preview'}
+                  <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-slate-900/80 text-[10px] font-mono text-slate-300 backdrop-blur border border-slate-700/50">
+                    {selectedFile ? `Device Image Selected: ${selectedFile.name}` : 'Current Image Preview'}
                   </div>
                 </div>
               ) : (
                 <div className="h-24 rounded-xl border border-dashed border-slate-700 bg-slate-900/50 flex flex-col items-center justify-center text-slate-500 space-y-1">
                   <ImageIcon className="w-6 h-6 text-slate-600" />
-                  <span className="text-xs">No image assigned</span>
+                  <span className="text-xs">No image assigned (Default fallback will display)</span>
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {/* File Upload Input */}
+                {/* Method 1: Device File Upload */}
                 <div className="space-y-1">
-                  <span className="text-[11px] text-slate-400">Upload Image File (Max 5MB)</span>
-                  <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs font-medium cursor-pointer transition-colors">
+                  <span className="text-[11px] text-slate-400 font-medium">Method 1: Upload from Device</span>
+                  <label className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
+                    selectedFile
+                      ? 'bg-sky-950/60 border-sky-500 text-sky-300'
+                      : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-slate-200'
+                  }`}>
                     <Upload className="w-3.5 h-3.5 text-sky-400" />
-                    <span>{selectedFile ? selectedFile.name : 'Choose File from Computer'}</span>
+                    <span className="truncate">{selectedFile ? selectedFile.name : 'Choose File from Computer'}</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp,image/gif"
@@ -458,9 +481,9 @@ export default function ProjectManager() {
                   </label>
                 </div>
 
-                {/* External HTTPS Image URL Input */}
+                {/* Method 2: External HTTPS Image URL */}
                 <div className="space-y-1">
-                  <span className="text-[11px] text-slate-400">Or Paste Image URL</span>
+                  <span className="text-[11px] text-slate-400 font-medium">Method 2: Or External HTTPS URL</span>
                   <input
                     type="url"
                     value={imageUrl}
@@ -470,9 +493,10 @@ export default function ProjectManager() {
                         setSelectedFile(null);
                         if (filePreview) URL.revokeObjectURL(filePreview);
                         setFilePreview('');
+                        setUploadNotice('');
                       }
                     }}
-                    placeholder="https://... or assets/images/project-ai-analytics.jpg"
+                    placeholder="https://... (Optional if device file chosen)"
                     className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-sky-500"
                   />
                 </div>
@@ -516,7 +540,7 @@ export default function ProjectManager() {
                 className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold flex items-center gap-2 disabled:opacity-50"
               >
                 {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-                <span>{saving ? 'Saving...' : 'Save Project'}</span>
+                <span>{saving ? 'Uploading & Saving...' : 'Save Project'}</span>
               </button>
             </div>
           </form>
