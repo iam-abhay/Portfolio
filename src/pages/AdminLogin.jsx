@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, Key, ShieldCheck, ArrowLeft } from 'lucide-react';
 
@@ -14,7 +14,7 @@ export default function AdminLogin() {
 
   // If already logged in, redirect to admin dashboard
   if (user) {
-    navigate('/admin/dashboard');
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   const handleSubmit = async (e) => {
@@ -72,7 +72,7 @@ export default function AdminLogin() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="iamabhaykharat@gmail.com"
+                placeholder="admin@example.com"
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm outline-none focus:border-sky-500 transition-colors"
               />
             </div>
@@ -104,10 +104,6 @@ export default function AdminLogin() {
             <span>{loading ? 'Authenticating...' : 'Sign In to Dashboard'}</span>
           </button>
         </form>
-
-        <div className="text-center pt-2 text-[11px] text-slate-500 font-mono">
-          Dev Fallback Login: iamabhaykharat@gmail.com / admin123
-        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AdminLogin from './pages/AdminLogin';
+import ProtectedRoute from './components/ProtectedRoute';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ProjectManager from './pages/admin/ProjectManager';
@@ -21,14 +22,16 @@ export default function App() {
       <Route path="/admin" element={<AdminLogin />} />
 
       {/* Protected Admin CMS Dashboard Routes */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="projects" element={<ProjectManager />} />
-        <Route path="skills" element={<SkillManager />} />
-        <Route path="experience" element={<ExpManager />} />
-        <Route path="education" element={<EduManager />} />
-        <Route path="certifications" element={<CertManager />} />
-        <Route path="profile" element={<ProfileManager />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="projects" element={<ProjectManager />} />
+          <Route path="skills" element={<SkillManager />} />
+          <Route path="experience" element={<ExpManager />} />
+          <Route path="education" element={<EduManager />} />
+          <Route path="certifications" element={<CertManager />} />
+          <Route path="profile" element={<ProfileManager />} />
+        </Route>
       </Route>
 
       {/* Fallback redirect */}

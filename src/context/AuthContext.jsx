@@ -5,27 +5,25 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (isSupabaseConfigured && supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null);
+      supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+        setSession(currentSession ?? null);
+        setUser(currentSession?.user ?? null);
         setLoading(false);
       });
 
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null);
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+        setSession(currentSession ?? null);
+        setUser(currentSession?.user ?? null);
         setLoading(false);
       });
 
       return () => subscription.unsubscribe();
     } else {
-      // Local development mock auth fallback check
-      const localAdmin = localStorage.getItem('portfolio_admin_logged_in');
-      if (localAdmin === 'true') {
-        setUser({ id: 'local-admin', email: 'iamabhaykharat@gmail.com' });
-      }
       setLoading(false);
     }
   }, []);
@@ -34,16 +32,11 @@ export function AuthProvider({ children }) {
     if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
+      setUser(data.user);
+      setSession(data.session);
       return data;
     } else {
-      // Local fallback auth
-      if (email === 'iamabhaykharat@gmail.com' && password === 'admin123') {
-        localStorage.setItem('portfolio_admin_logged_in', 'true');
-        setUser({ id: 'local-admin', email });
-        return { user: { id: 'local-admin', email } };
-      } else {
-        throw new Error('Invalid email or password. (Default dev admin: iamabhaykharat@gmail.com / admin123)');
-      }
+      throw new Error('Supabase client is not configured. Please check environment variables.');
     }
   };
 
@@ -51,12 +44,12 @@ export function AuthProvider({ children }) {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
     }
-    localStorage.removeItem('portfolio_admin_logged_in');
     setUser(null);
+    setSession(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, isSupabaseConfigured }}>
+    <AuthContext.Provider value={{ user, session, loading, login, logout, isSupabaseConfigured }}>
       {children}
     </AuthContext.Provider>
   );

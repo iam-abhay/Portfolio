@@ -8,11 +8,6 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (!user) {
-    navigate('/admin');
-    return null;
-  }
-
   const handleLogout = async () => {
     await logout();
     navigate('/admin');
