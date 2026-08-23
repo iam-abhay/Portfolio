@@ -1,14 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderGit2, Cpu, Briefcase, Award, Plus, CheckCircle2 } from 'lucide-react';
-import { INITIAL_PROJECTS, SKILL_CATEGORIES, INITIAL_EXPERIENCE, INITIAL_CERTIFICATIONS } from '../../lib/data';
+import { FolderGit2, Cpu, Briefcase, Award, Plus, CheckCircle2, Loader2 } from 'lucide-react';
+import { fetchAdminProjects, fetchAdminSkills, fetchAdminExperience, fetchAdminCertifications } from '../../lib/adminApi';
 
 export default function AdminDashboard() {
+  const [counts, setCounts] = useState({
+    projects: 0,
+    skills: 0,
+    experience: 0,
+    certifications: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    async function loadMetrics() {
+      try {
+        setLoading(true);
+        setError('');
+        const [projects, skills, experience, certifications] = await Promise.all([
+          fetchAdminProjects(),
+          fetchAdminSkills(),
+          fetchAdminExperience(),
+          fetchAdminCertifications(),
+        ]);
+
+        setCounts({
+          projects: projects?.length || 0,
+          skills: skills?.length || 0,
+          experience: experience?.length || 0,
+          certifications: certifications?.length || 0,
+        });
+      } catch (err) {
+        setError(err.message || 'Failed to load dashboard metrics from Supabase.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadMetrics();
+  }, []);
+
   const stats = [
-    { label: 'Published Projects', count: INITIAL_PROJECTS.length, icon: FolderGit2, color: 'text-sky-400', path: '/admin/projects' },
-    { label: 'Skill Categories', count: SKILL_CATEGORIES.length, icon: Cpu, color: 'text-indigo-400', path: '/admin/skills' },
-    { label: 'Experience Entries', count: INITIAL_EXPERIENCE.length, icon: Briefcase, color: 'text-emerald-400', path: '/admin/experience' },
-    { label: 'Certifications', count: INITIAL_CERTIFICATIONS.length, icon: Award, color: 'text-amber-400', path: '/admin/certifications' },
+    { label: 'Projects Count', count: counts.projects, icon: FolderGit2, color: 'text-sky-400', path: '/admin/projects' },
+    { label: 'Skills Registered', count: counts.skills, icon: Cpu, color: 'text-indigo-400', path: '/admin/skills' },
+    { label: 'Experience Entries', count: counts.experience, icon: Briefcase, color: 'text-emerald-400', path: '/admin/experience' },
+    { label: 'Certifications', count: counts.certifications, icon: Award, color: 'text-amber-400', path: '/admin/certifications' },
   ];
 
   return (
@@ -21,6 +58,12 @@ export default function AdminDashboard() {
           Manage your live portfolio content, projects, skills matrix, and profile settings.
         </p>
       </div>
+
+      {error && (
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium">
+          {error}
+        </div>
+      )}
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -37,7 +80,7 @@ export default function AdminDashboard() {
                   <Icon className="w-5 h-5" />
                 </div>
                 <span className="text-2xl font-heading font-extrabold text-white group-hover:text-sky-400 transition-colors">
-                  {stat.count}
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin text-slate-500" /> : stat.count}
                 </span>
               </div>
               <span className="text-xs font-heading font-semibold text-slate-400 block">
@@ -81,7 +124,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Supabase / Fallback Store: <strong>Synced</strong></span>
+              <span>Supabase Live Store: <strong>Synced & Authenticated</strong></span>
             </div>
           </div>
         </div>
