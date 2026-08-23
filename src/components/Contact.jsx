@@ -35,6 +35,8 @@ export default function Contact({ profile }) {
     if (EMAILJS_PUBLIC_KEY) {
       try {
         const templateParams = {
+          name: name,
+          email: email,
           from_name: name,
           from_email: email,
           subject: subject,
