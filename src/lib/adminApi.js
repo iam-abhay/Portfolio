@@ -11,6 +11,24 @@ function checkSupabaseConfigured() {
    ========================================================================== */
 
 /**
+ * Fetch profile record for Admin Dashboard.
+ */
+export async function fetchAdminProfile() {
+  checkSupabaseConfigured();
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .limit(1);
+
+  if (error) {
+    throw new Error(`Failed to fetch admin profile: ${error.message}`);
+  }
+
+  return (data && data.length > 0) ? data[0] : null;
+}
+
+/**
  * Updates or inserts the portfolio profile record.
  * Handles normalization between frontend form properties and database schema columns.
  */
@@ -42,7 +60,7 @@ export async function updateProfile(profileData) {
   }
 
   if (existingProfiles && existingProfiles.length > 0) {
-    const profileId = existingProfiles[0].id;
+    const profileId = profileData.id || existingProfiles[0].id;
     const { data, error } = await supabase
       .from('profiles')
       .update(payload)

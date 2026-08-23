@@ -1,32 +1,96 @@
-import React, { useState } from 'react';
-import { User, Save } from 'lucide-react';
-import { PROFILE_DATA } from '../../lib/data';
+import React, { useState, useEffect } from 'react';
+import { User, Save, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { fetchAdminProfile, updateProfile } from '../../lib/adminApi';
 
 export default function ProfileManager() {
-  const [name, setName] = useState(PROFILE_DATA.name);
-  const [headline, setHeadline] = useState(PROFILE_DATA.headline);
-  const [subtext, setSubtext] = useState(PROFILE_DATA.subtext);
-  const [about, setAbout] = useState(PROFILE_DATA.about);
-  const [email, setEmail] = useState(PROFILE_DATA.email);
-  const [github, setGithub] = useState(PROFILE_DATA.github);
-  const [linkedin, setLinkedin] = useState(PROFILE_DATA.linkedin);
-  const [resumeUrl, setResumeUrl] = useState(PROFILE_DATA.resumeUrl);
-  const [saved, setSaved] = useState(false);
+  const [profileId, setProfileId] = useState(null);
+  const [name, setName] = useState('');
+  const [headline, setHeadline] = useState('');
+  const [subtext, setSubtext] = useState('');
+  const [about, setAbout] = useState('');
+  const [email, setEmail] = useState('');
+  const [github, setGithub] = useState('');
+  const [linkedin, setLinkedin] = useState('');
+  const [resumeUrl, setResumeUrl] = useState('');
+  const [phone, setPhone] = useState('');
+  const [profileImageUrl, setProfileImageUrl] = useState('');
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await fetchAdminProfile();
+        if (data) {
+          setProfileId(data.id || null);
+          setName(data.name || '');
+          setHeadline(data.headline || '');
+          setSubtext(data.short_bio || data.subtext || '');
+          setAbout(data.about || '');
+          setEmail(data.email || '');
+          setPhone(data.phone || '');
+          setGithub(data.github_url || data.github || '');
+          setLinkedin(data.linkedin_url || data.linkedin || '');
+          setResumeUrl(data.resume_url || data.resumeUrl || '');
+          setProfileImageUrl(data.profile_image_url || data.profileImageUrl || '');
+        }
+      } catch (err) {
+        setError(err.message || 'Failed to load profile data from Supabase.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProfile();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    PROFILE_DATA.name = name;
-    PROFILE_DATA.headline = headline;
-    PROFILE_DATA.subtext = subtext;
-    PROFILE_DATA.about = about;
-    PROFILE_DATA.email = email;
-    PROFILE_DATA.github = github;
-    PROFILE_DATA.linkedin = linkedin;
-    PROFILE_DATA.resumeUrl = resumeUrl;
-    
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const payload = {
+        id: profileId,
+        name,
+        headline,
+        subtext,
+        about,
+        email,
+        phone,
+        github,
+        linkedin,
+        resumeUrl,
+        profileImageUrl,
+      };
+
+      const updated = await updateProfile(payload);
+      if (updated && updated.id) {
+        setProfileId(updated.id);
+      }
+      setSuccess('Profile settings successfully saved to Supabase!');
+      setTimeout(() => setSuccess(''), 4000);
+    } catch (err) {
+      setError(err.message || 'Failed to save profile settings.');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
+        <p className="text-xs font-mono text-slate-400">Loading Profile Settings from Supabase...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -34,6 +98,20 @@ export default function ProfileManager() {
         <h2 className="text-2xl font-heading font-extrabold text-white">Profile Settings</h2>
         <p className="text-xs text-slate-400">Update your headline, biography, recruiter email, and social links.</p>
       </div>
+
+      {error && (
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {success && (
+        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          <span>{success}</span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
         <div className="space-y-1">
@@ -125,16 +203,14 @@ export default function ProfileManager() {
           </div>
         </div>
 
-        <div className="pt-4 flex items-center justify-between">
-          {saved ? (
-            <span className="text-xs text-emerald-400 font-semibold">✓ Profile settings updated!</span>
-          ) : <span />}
-
+        <div className="pt-4 flex items-center justify-end">
           <button
             type="submit"
-            className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-heading font-semibold text-xs flex items-center gap-2"
+            disabled={saving}
+            className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-heading font-semibold text-xs flex items-center gap-2 transition-all shadow-md shadow-sky-600/20 disabled:opacity-50"
           >
-            <Save className="w-4 h-4" /> Save Profile Settings
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            <span>{saving ? 'Saving...' : 'Save Profile Settings'}</span>
           </button>
         </div>
       </form>
