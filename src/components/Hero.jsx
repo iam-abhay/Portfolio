@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, ArrowRight, Github, Linkedin, Mail, Code2, Database, Terminal, Sparkles } from 'lucide-react';
+import { FileText, ArrowRight, Github, Linkedin, Mail, Code2, Database, Terminal, Sparkles, Download } from 'lucide-react';
+
+const getResumeUrl = (url) => {
+  if (!url || url === '#') {
+    return `${import.meta.env.BASE_URL}assets/resume.pdf`;
+  }
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+  return `${import.meta.env.BASE_URL}${cleanUrl}`;
+};
 
 export default function Hero({ profile, onOpenTerminal }) {
   const roles = [
@@ -24,7 +35,7 @@ export default function Hero({ profile, onOpenTerminal }) {
       speed = 300;
     }
 
-    const timer = setTimeout(() => {
+    const handleTyping = () => {
       if (!isDeleting) {
         if (displayedText.length < currentRole.length) {
           setDisplayedText(currentRole.substring(0, displayedText.length + 1));
@@ -36,13 +47,15 @@ export default function Hero({ profile, onOpenTerminal }) {
           setDisplayedText(currentRole.substring(0, displayedText.length - 1));
         } else {
           setIsDeleting(false);
-          setRoleIdx((prev) => (prev + 1) % roles.length);
+          setRoleIdx((roleIdx + 1) % roles.length);
         }
       }
-    }, speed);
+    };
 
+    const timer = setTimeout(handleTyping, speed);
     return () => clearTimeout(timer);
   }, [displayedText, isDeleting, roleIdx]);
+
   return (
     <section id="hero" className="min-h-screen pt-28 sm:pt-36 pb-16 flex items-center relative overflow-hidden">
       {/* Background Subtle Gradient Spheres */}
@@ -104,15 +117,28 @@ export default function Hero({ profile, onOpenTerminal }) {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
 
-              <a
-                href={profile.resumeUrl || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-heading font-semibold text-sm border border-slate-300 dark:border-slate-800 transition-all flex items-center gap-2"
-              >
-                <FileText className="w-4 h-4 text-sky-500" />
-                <span>Resume</span>
-              </a>
+              <div className="flex items-center gap-2">
+                <a
+                  href={getResumeUrl(profile.resumeUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-heading font-semibold text-sm border border-slate-300 dark:border-slate-800 transition-all flex items-center gap-2 group"
+                  title="View Resume in New Tab"
+                >
+                  <FileText className="w-4 h-4 text-sky-500 group-hover:scale-110 transition-transform" />
+                  <span>Resume</span>
+                </a>
+                
+                <a
+                  href={getResumeUrl(profile.resumeUrl)}
+                  download="Abhay_Kharat_Resume.pdf"
+                  className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-800 transition-all flex items-center justify-center group"
+                  title="Download Resume PDF"
+                  aria-label="Download Resume PDF"
+                >
+                  <Download className="w-4 h-4 text-emerald-500 group-hover:translate-y-0.5 transition-transform" />
+                </a>
+              </div>
 
               <div className="flex items-center gap-2 ml-2 sm:ml-4">
                 <a

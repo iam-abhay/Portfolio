@@ -71,6 +71,7 @@ export async function updateProfile(profileData) {
     if (error) {
       throw new Error(`Failed to update profile: ${error.message}`);
     }
+    syncDatabaseToGit('update profile');
     return data;
   } else {
     const { data, error } = await supabase
@@ -82,6 +83,7 @@ export async function updateProfile(profileData) {
     if (error) {
       throw new Error(`Failed to create profile: ${error.message}`);
     }
+    syncDatabaseToGit('create profile');
     return data;
   }
 }
@@ -141,6 +143,7 @@ export async function createProject(projectData) {
   if (error) {
     throw new Error(`Failed to create project: ${error.message}`);
   }
+  syncDatabaseToGit('create project');
   return data;
 }
 
@@ -165,6 +168,7 @@ export async function updateProject(id, projectData) {
   if (error) {
     throw new Error(`Failed to update project: ${error.message}`);
   }
+  syncDatabaseToGit('update project');
   return data;
 }
 
@@ -182,6 +186,7 @@ export async function deleteProject(id) {
   if (error) {
     throw new Error(`Failed to delete project: ${error.message}`);
   }
+  syncDatabaseToGit('delete project');
   return { success: true, id };
 }
 
@@ -299,6 +304,7 @@ export async function createSkill(skillData) {
   if (error) {
     throw new Error(`Failed to create skill: ${error.message}`);
   }
+  syncDatabaseToGit('create skill');
   return data;
 }
 
@@ -318,6 +324,7 @@ export async function updateSkill(id, skillData) {
   if (error) {
     throw new Error(`Failed to update skill: ${error.message}`);
   }
+  syncDatabaseToGit('update skill');
   return data;
 }
 
@@ -335,6 +342,7 @@ export async function deleteSkill(id) {
   if (error) {
     throw new Error(`Failed to delete skill: ${error.message}`);
   }
+  syncDatabaseToGit('delete skill');
   return { success: true, id };
 }
 
@@ -387,6 +395,7 @@ export async function createExperience(expData) {
   if (error) {
     throw new Error(`Failed to create experience: ${error.message}`);
   }
+  syncDatabaseToGit('create experience');
   return data;
 }
 
@@ -406,6 +415,7 @@ export async function updateExperience(id, expData) {
   if (error) {
     throw new Error(`Failed to update experience: ${error.message}`);
   }
+  syncDatabaseToGit('update experience');
   return data;
 }
 
@@ -423,6 +433,7 @@ export async function deleteExperience(id) {
   if (error) {
     throw new Error(`Failed to delete experience: ${error.message}`);
   }
+  syncDatabaseToGit('delete experience');
   return { success: true, id };
 }
 
@@ -473,6 +484,7 @@ export async function createEducation(eduData) {
   if (error) {
     throw new Error(`Failed to create education: ${error.message}`);
   }
+  syncDatabaseToGit('create education');
   return data;
 }
 
@@ -492,6 +504,7 @@ export async function updateEducation(id, eduData) {
   if (error) {
     throw new Error(`Failed to update education: ${error.message}`);
   }
+  syncDatabaseToGit('update education');
   return data;
 }
 
@@ -509,6 +522,7 @@ export async function deleteEducation(id) {
   if (error) {
     throw new Error(`Failed to delete education: ${error.message}`);
   }
+  syncDatabaseToGit('delete education');
   return { success: true, id };
 }
 
@@ -559,6 +573,7 @@ export async function createCertification(certData) {
   if (error) {
     throw new Error(`Failed to create certification: ${error.message}`);
   }
+  syncDatabaseToGit('create certification');
   return data;
 }
 
@@ -578,6 +593,7 @@ export async function updateCertification(id, certData) {
   if (error) {
     throw new Error(`Failed to update certification: ${error.message}`);
   }
+  syncDatabaseToGit('update certification');
   return data;
 }
 
@@ -595,5 +611,138 @@ export async function deleteCertification(id) {
   if (error) {
     throw new Error(`Failed to delete certification: ${error.message}`);
   }
+  syncDatabaseToGit('delete certification');
   return { success: true, id };
 }
+
+/**
+ * Upload a resume PDF file to Supabase Storage.
+ */
+export async function uploadResumeFile(file) {
+  checkSupabaseConfigured();
+
+  if (!file) {
+    throw new Error('No file provided for upload.');
+  }
+
+  if (file.type !== 'application/pdf') {
+    throw new Error('Invalid file format. Only PDF files are allowed.');
+  }
+
+  const maxSize = 5 * 1024 * 1024; // 5 MB
+  if (file.size > maxSize) {
+    throw new Error('File size exceeds the 5 MB limit.');
+  }
+
+  // Use a predictable name or timestamped name
+  const fileName = `resumes/resume-${Date.now()}.pdf`;
+
+  const { data, error } = await supabase.storage
+    .from('portfolio-images')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: true,
+    });
+
+  if (error) {
+    throw new Error(`Storage upload failed: ${error.message}`);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('portfolio-images')
+    .getPublicUrl(data.path);
+
+  return {
+    path: data.path,
+    publicUrl: urlData.publicUrl,
+  };
+}
+
+/**
+ * Delete a resume from Supabase Storage.
+ */
+export async function deleteResumeFile(pathOrUrl) {
+  if (!pathOrUrl || typeof pathOrUrl !== 'string') return;
+  if (pathOrUrl.includes('assets/')) return; // ignore local assets path
+
+  checkSupabaseConfigured();
+
+  let storagePath = pathOrUrl;
+  if (pathOrUrl.startsWith('http')) {
+    const parts = pathOrUrl.split('/portfolio-images/');
+    if (parts.length > 1) {
+      storagePath = parts[1];
+    } else {
+      return; // Not a Supabase Storage path
+    }
+  }
+
+  const { error } = await supabase.storage
+    .from('portfolio-images')
+    .remove([storagePath]);
+
+  if (error) {
+    console.error(`Failed to delete resume from storage: ${error.message}`);
+  }
+}
+
+/**
+ * Automatically fetch the current database contents from Supabase and sync/commit/push
+ * them to the local Git repository (backed up to supabase/db_backup.json).
+ * This endpoint is only available when running locally in development.
+ */
+export async function syncDatabaseToGit(actionName) {
+  try {
+    if (!supabase) return null;
+
+    // Fetch all tables
+    const [
+      { data: profile },
+      { data: projects },
+      { data: skills },
+      { data: experience },
+      { data: education },
+      { data: certifications },
+      { data: socialLinks }
+    ] = await Promise.all([
+      supabase.from('profiles').select('*'),
+      supabase.from('projects').select('*').order('display_order', { ascending: true }),
+      supabase.from('skills').select('*').order('name', { ascending: true }),
+      supabase.from('experience').select('*').order('start_date', { ascending: false }),
+      supabase.from('education').select('*').order('start_date', { ascending: false }),
+      supabase.from('certifications').select('*').order('name', { ascending: true }),
+      supabase.from('social_links').select('*')
+    ]);
+
+    const backup = {
+      timestamp: new Date().toISOString(),
+      profile: (profile && profile.length > 0) ? profile[0] : null,
+      projects: projects || [],
+      skills: skills || [],
+      experience: experience || [],
+      education: education || [],
+      certifications: certifications || [],
+      social_links: socialLinks || []
+    };
+
+    const response = await fetch('/api/admin/git-sync', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `admin: ${actionName}`,
+        backup
+      })
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+    return null;
+  } catch (err) {
+    console.warn('Git sync failed (expected in production or if server is stopped):', err);
+    return null;
+  }
+}
+
