@@ -111,7 +111,7 @@ export default function Hero({ profile, onOpenTerminal }) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed"
             >
-              Building scalable Java Spring Boot backend services and responsive React applications. Passionate about computer science fundamentals, high-performance database architectures, and exploring <span className="font-semibold text-slate-900 dark:text-slate-100">Data Analytics & Data Engineering</span>.
+              Building scalable backend services and responsive web applications. Passionate about computer science fundamentals, high-performance system architecture, and delivering impactful software solutions.
             </motion.p>
 
             {/* Action Buttons */}
@@ -151,6 +151,18 @@ export default function Hero({ profile, onOpenTerminal }) {
                   <Download className="w-4 h-4 text-emerald-500 group-hover:translate-y-0.5 transition-transform" />
                 </a>
               </div>
+
+              {/* CLI Shell Launcher */}
+              {onOpenTerminal && (
+                <button
+                  onClick={onOpenTerminal}
+                  className="px-5 py-3.5 rounded-xl bg-slate-950 dark:bg-slate-950 text-sky-400 border border-slate-700 dark:border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all font-mono text-sm flex items-center gap-2.5 group shadow-inner"
+                  title="Launch Developer Shell"
+                >
+                  <Terminal className="w-4 h-4 text-sky-400 group-hover:scale-110 transition-transform" />
+                  <span className="font-heading font-semibold text-sky-300 text-sm">CLI Shell</span>
+                </button>
+              )}
 
               <div className="flex items-center gap-2 ml-2 sm:ml-4">
                 <a
@@ -224,21 +236,7 @@ export default function Hero({ profile, onOpenTerminal }) {
                 </div>
               </div>
 
-              {/* CLI Shell Launcher Badge */}
-              {onOpenTerminal && (
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-                  <button
-                    onClick={onOpenTerminal}
-                    className="w-full py-2.5 px-3 rounded-xl bg-slate-950 text-sky-400 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-900 transition-all font-mono text-xs flex items-center justify-between group/term shadow-inner"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Terminal className="w-3.5 h-3.5 text-sky-400" />
-                      <span>Launch Developer Shell</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 group-hover/term:text-sky-400 transition-colors">abhay@portfolio:~$</span>
-                  </button>
-                </div>
-              )}
+
 
               <div className="pt-3 border-t border-slate-200 dark:border-slate-800 grid grid-cols-2 gap-3 text-center">
                 <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60">
