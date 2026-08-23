@@ -38,7 +38,7 @@ Strong foundation in OOP, Data Structures & Algorithms, DBMS, Git, and JWT Authe
   'https://github.com/iam-abhay',
   'https://linkedin.com/in/abhay-kharat',
   '#',
-  NULL
+  'assets/images/profile.jpg'
 );
 
 -- 3. SEED PROJECTS TABLE

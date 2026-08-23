@@ -112,7 +112,7 @@ export default function TerminalModal({ isOpen, onClose, profile }) {
       case 'education':
         newHistory.push({
           type: 'output',
-          text: `Institution: Smt. Kashibai Navale College of Engineering (SKNCOE)\nDegree:      Bachelor of Engineering (Electronics & Telecommunication)\nGraduation:  2027 (Expected)`
+          text: `Institution: Smt. Kashibai Navale College of Engineering (SKNCOE)\nDegree:      Bachelor of Engineering (Electronics & Telecommunication)\nGraduation:  2026 (Expected)`
         });
         break;
 

@@ -13,12 +13,23 @@ const getResumeUrl = (url) => {
   return `${import.meta.env.BASE_URL}${cleanUrl}`;
 };
 
+const getProfileImageUrl = (url) => {
+  if (!url) {
+    return `${import.meta.env.BASE_URL}assets/images/profile.jpg`;
+  }
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+  return `${import.meta.env.BASE_URL}${cleanUrl}`;
+};
+
 export default function Hero({ profile, onOpenTerminal }) {
   const roles = [
     "Java Backend / Full-Stack Developer",
     "Spring Boot & PostgreSQL Engineer",
     "Data Analytics & Engineering Enthusiast",
-    "Software Engineer | SKNCOE Graduate (2027)"
+    "Software Engineer | SKNCOE Graduate (2026)"
   ];
   
   const [roleIdx, setRoleIdx] = useState(0);
@@ -179,7 +190,22 @@ export default function Hero({ profile, onOpenTerminal }) {
           >
             <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:shadow-sky-500/15 hover:-translate-y-1 hover:rotate-1 transition-all duration-300 space-y-6 group">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform">
+                <img
+                  src={getProfileImageUrl(profile.profileImageUrl)}
+                  alt="Abhay Kharat Profile"
+                  className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform"
+                  id="profile-avatar-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    const fallback = document.getElementById('profile-initials-fallback');
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                <div
+                  id="profile-initials-fallback"
+                  style={{ display: 'none' }}
+                  className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform"
+                >
                   AK
                 </div>
                 <div>
@@ -225,7 +251,7 @@ export default function Hero({ profile, onOpenTerminal }) {
                   <span className="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Core Projects</span>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60">
-                  <span className="block font-heading font-bold text-sky-600 dark:text-sky-400 text-lg">2027</span>
+                  <span className="block font-heading font-bold text-sky-600 dark:text-sky-400 text-lg">2026</span>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Graduation</span>
                 </div>
               </div>
