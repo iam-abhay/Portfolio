@@ -11,6 +11,10 @@ build/
 .env.local
 .env.*.local
 
+# Temporary & CLI files
+supabase/.temp/
+.temp/
+
 # IDE & OS files
 .DS_Store
 *.suo
