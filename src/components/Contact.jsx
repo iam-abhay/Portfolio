@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, MapPin, Copy, Check, Send } from 'lucide-react';
+import { Mail, Github, Linkedin, MapPin, Copy, Check, Send, Loader2, AlertCircle } from 'lucide-react';
+import emailjs from '@emailjs/browser';
+
+// EmailJS configuration — update these with your actual IDs
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_portfolio';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_contact';
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 
 export default function Contact({ profile }) {
   const [copied, setCopied] = useState(false);
-  const [formSent, setFormSent] = useState(false);
+  const [formStatus, setFormStatus] = useState('idle'); // idle | sending | sent | error
+  const [errorMsg, setErrorMsg] = useState('');
+  const formRef = useRef(null);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(profile.email || 'iamabhaykharat@gmail.com');
@@ -12,10 +20,48 @@ export default function Contact({ profile }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSent(true);
-    setTimeout(() => setFormSent(false), 4000);
+    setFormStatus('sending');
+    setErrorMsg('');
+
+    const formData = new FormData(formRef.current);
+    const name = formData.get('from_name');
+    const email = formData.get('from_email');
+    const role = formData.get('sender_role');
+    const subject = formData.get('subject');
+    const message = formData.get('message');
+
+    // If EmailJS public key is configured, send via EmailJS
+    if (EMAILJS_PUBLIC_KEY) {
+      try {
+        await emailjs.sendForm(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          formRef.current,
+          EMAILJS_PUBLIC_KEY
+        );
+        setFormStatus('sent');
+        formRef.current.reset();
+        setTimeout(() => setFormStatus('idle'), 5000);
+      } catch (err) {
+        console.error('EmailJS error:', err);
+        setFormStatus('error');
+        setErrorMsg('Failed to send message. Please try emailing directly.');
+        setTimeout(() => setFormStatus('idle'), 5000);
+      }
+    } else {
+      // Fallback: open mailto link with pre-filled content
+      const mailtoSubject = encodeURIComponent(`[Portfolio Contact] ${subject}`);
+      const mailtoBody = encodeURIComponent(
+        `Name: ${name}\nRole: ${role}\nEmail: ${email}\n\nSubject: ${subject}\n\nMessage:\n${message}`
+      );
+      const recipientEmail = profile.email || 'iamabhaykharat@gmail.com';
+      window.open(`mailto:${recipientEmail}?subject=${mailtoSubject}&body=${mailtoBody}`, '_blank');
+      setFormStatus('sent');
+      formRef.current.reset();
+      setTimeout(() => setFormStatus('idle'), 5000);
+    }
   };
 
   return (
@@ -32,7 +78,7 @@ export default function Contact({ profile }) {
             Get In Touch
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-base">
-            Open to software engineering roles, Java backend opportunities, and technical collaborations.
+            Open to software engineering roles, backend opportunities, and technical collaborations.
           </p>
         </div>
 
@@ -124,6 +170,7 @@ export default function Contact({ profile }) {
           {/* Quick Message Form */}
           <div className="lg:col-span-7">
             <form
+              ref={formRef}
               onSubmit={handleSubmit}
               className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4"
             >
@@ -138,8 +185,9 @@ export default function Contact({ profile }) {
                   </label>
                   <input
                     type="text"
+                    name="from_name"
                     required
-                    placeholder="Recruiter / Engineer Name"
+                    placeholder="HR / Recruiter / Engineer Name"
                     className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
                   />
                 </div>
@@ -150,6 +198,7 @@ export default function Contact({ profile }) {
                   </label>
                   <input
                     type="email"
+                    name="from_email"
                     required
                     placeholder="recruiter@company.com"
                     className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
@@ -157,16 +206,36 @@ export default function Contact({ profile }) {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-heading font-semibold text-slate-700 dark:text-slate-300">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Opportunity Inquiry / Project Discussion"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-heading font-semibold text-slate-700 dark:text-slate-300">
+                    I am a
+                  </label>
+                  <select
+                    name="sender_role"
+                    required
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
+                  >
+                    <option value="HR / Recruiter">HR / Recruiter</option>
+                    <option value="Hiring Manager">Hiring Manager</option>
+                    <option value="Software Engineer">Software Engineer</option>
+                    <option value="Student / Peer">Student / Peer</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-heading font-semibold text-slate-700 dark:text-slate-300">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    name="subject"
+                    required
+                    placeholder="Opportunity Inquiry / Project Discussion"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1.5">
@@ -175,6 +244,7 @@ export default function Contact({ profile }) {
                 </label>
                 <textarea
                   rows={4}
+                  name="message"
                   required
                   placeholder="Hello Abhay, I reviewed your profile and would like to discuss..."
                   className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm outline-none focus:border-sky-500 transition-colors resize-none"
@@ -183,15 +253,31 @@ export default function Contact({ profile }) {
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-heading font-semibold text-sm shadow-md shadow-sky-600/20 transition-all flex items-center justify-center gap-2"
+                disabled={formStatus === 'sending'}
+                className="w-full py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-heading font-semibold text-sm shadow-md shadow-sky-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Send className="w-4 h-4" />
-                <span>Send Direct Inquiry</span>
+                {formStatus === 'sending' ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Send Direct Inquiry</span>
+                  </>
+                )}
               </button>
 
-              {formSent && (
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium text-center pt-2">
-                  ✓ Thank you! Your message inquiry has been recorded.
+              {formStatus === 'sent' && (
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium text-center pt-2 flex items-center justify-center gap-1.5">
+                  <Check className="w-3.5 h-3.5" /> Thank you! Your message has been sent successfully. I'll get back to you soon.
+                </p>
+              )}
+
+              {formStatus === 'error' && (
+                <p className="text-xs text-red-500 dark:text-red-400 font-medium text-center pt-2 flex items-center justify-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5" /> {errorMsg}
                 </p>
               )}
             </form>
