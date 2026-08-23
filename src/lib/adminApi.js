@@ -185,6 +185,76 @@ export async function deleteProject(id) {
   return { success: true, id };
 }
 
+/**
+ * Upload a project image file to Supabase Storage bucket 'portfolio-images'.
+ */
+export async function uploadProjectImage(file) {
+  checkSupabaseConfigured();
+
+  if (!file) {
+    throw new Error('No file provided for upload.');
+  }
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.');
+  }
+
+  const maxSize = 5 * 1024 * 1024; // 5 MB
+  if (file.size > maxSize) {
+    throw new Error('File size exceeds the 5 MB limit.');
+  }
+
+  const ext = file.name.split('.').pop() || 'webp';
+  const fileName = `projects/${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+
+  const { data, error } = await supabase.storage
+    .from('portfolio-images')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: true,
+    });
+
+  if (error) {
+    throw new Error(`Storage upload failed: ${error.message}`);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('portfolio-images')
+    .getPublicUrl(data.path);
+
+  return {
+    path: data.path,
+    publicUrl: urlData.publicUrl,
+  };
+}
+
+/**
+ * Delete a project image from Supabase Storage if it belongs to 'portfolio-images'.
+ */
+export async function deleteProjectImage(pathOrUrl) {
+  if (!pathOrUrl || typeof pathOrUrl !== 'string') return;
+  if (pathOrUrl.includes('assets/images/')) return;
+
+  checkSupabaseConfigured();
+
+  try {
+    let storagePath = pathOrUrl;
+    if (pathOrUrl.includes('/portfolio-images/')) {
+      storagePath = pathOrUrl.split('/portfolio-images/')[1];
+    }
+
+    if (storagePath) {
+      await supabase.storage
+        .from('portfolio-images')
+        .remove([storagePath]);
+    }
+  } catch (err) {
+    console.warn('Storage image deletion warning:', err.message);
+  }
+}
+
+
 /* ==========================================================================
    SKILLS MANAGEMENT
    ========================================================================== */

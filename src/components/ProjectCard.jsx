@@ -1,8 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, ExternalLink, Sparkles, ChevronRight } from 'lucide-react';
+import { Github, ExternalLink, Sparkles, ChevronRight, Code2 } from 'lucide-react';
+
+export function getResolvedImageUrl(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
+    return trimmed;
+  }
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const cleanPath = trimmed.replace(/^\/+/, '');
+  const cleanBase = baseUrl.replace(/^\/+|\/+$/g, '');
+
+  if (cleanBase && cleanPath.startsWith(cleanBase)) {
+    return '/' + cleanPath;
+  }
+  return baseUrl + cleanPath;
+}
 
 export default function ProjectCard({ project, onSelect }) {
+  const [imgError, setImgError] = useState(false);
+  const resolvedSrc = getResolvedImageUrl(project.image_url || project.imageUrl);
+
   return (
     <motion.div
       layout
@@ -13,12 +33,21 @@ export default function ProjectCard({ project, onSelect }) {
       className="group rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col hover:shadow-xl hover:border-sky-500/50 transition-all"
     >
       {/* Project Image Thumbnail */}
-      <div className="relative h-48 bg-slate-950 overflow-hidden">
-        <img
-          src={project.image_url || 'assets/images/project-ai-analytics.jpg'}
-          alt={project.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-        />
+      <div className="relative h-48 bg-slate-950 overflow-hidden flex items-center justify-center">
+        {resolvedSrc && !imgError ? (
+          <img
+            src={resolvedSrc}
+            alt={project.title}
+            onError={() => setImgError(true)}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-slate-900 via-sky-950/40 to-slate-900 flex flex-col items-center justify-center p-4 text-center">
+            <Code2 className="w-10 h-10 text-sky-400/60 mb-2 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-mono font-medium text-slate-400 line-clamp-1">{project.title}</span>
+          </div>
+        )}
+
         <div className="absolute top-3 left-3">
           <span className="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-sky-400 text-[11px] font-mono font-medium border border-slate-700/60">
             {project.category}
