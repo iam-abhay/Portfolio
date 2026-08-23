@@ -1,7 +1,7 @@
 # Portfolio
 
 ## Live Website
-https://iam-abhay.github.io/Portfolio/
+https://iam-abhay.github.io/
 
 ## Repository
 https://github.com/iam-abhay/Portfolio
@@ -159,4 +159,4 @@ No explicit open‑source license file is present in this repository.
 **Abhay Kharat** – Aspiring Software Engineer
 - GitHub: https://github.com/iam-abhay
 - LinkedIn: https://www.linkedin.com/in/abhay-kharat
-- Portfolio: https://iam-abhay.github.io/Portfolio/
+- Portfolio: https://iam-abhay.github.io/

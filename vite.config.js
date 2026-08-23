@@ -225,7 +225,7 @@ function copy404Plugin() {
 
 export default defineConfig({
   plugins: [react(), gitSyncPlugin(), copy404Plugin()],
-  base: process.env.VITE_BASE_PATH || (process.env.GITHUB_ACTIONS ? '/Portfolio/' : '/'),
+  base: process.env.VITE_BASE_PATH || '/',
   server: {
     port: 3000,
     open: false,

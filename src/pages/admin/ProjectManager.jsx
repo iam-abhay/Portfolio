@@ -198,7 +198,7 @@ export default function ProjectManager() {
         if (
           !finalImageUrl.startsWith('https://') &&
           !finalImageUrl.startsWith('assets/') &&
-          !finalImageUrl.startsWith('/Portfolio/')
+          !finalImageUrl.startsWith('/')
         ) {
           if (finalImageUrl.startsWith('http://')) {
             throw new Error('Insecure HTTP image URL rejected. Please use a secure https:// image URL.');
