@@ -1,6 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { User, Save, Loader2, AlertCircle, CheckCircle2, FileText, Upload, Trash2 } from 'lucide-react';
-import { fetchAdminProfile, updateProfile, uploadResumeFile, deleteResumeFile } from '../../lib/adminApi';
+import { fetchAdminProfile, updateProfile, uploadResumeFile, deleteResumeFile, uploadProfileImageFile } from '../../lib/adminApi';
+
+const getResumeUrl = (url) => {
+  if (!url || url === '#') {
+    return `${import.meta.env.BASE_URL}assets/resume.pdf`;
+  }
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+  return `${import.meta.env.BASE_URL}${cleanUrl}`;
+};
+
+const getProfileImageUrl = (url) => {
+  if (!url) {
+    return `${import.meta.env.BASE_URL}assets/images/profile.jpg`;
+  }
+  if (url.startsWith('blob:') || url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+  return `${import.meta.env.BASE_URL}${cleanUrl}`;
+};
 
 export default function ProfileManager() {
   const [profileId, setProfileId] = useState(null);
@@ -22,6 +44,9 @@ export default function ProfileManager() {
   
   const [selectedResumeFile, setSelectedResumeFile] = useState(null);
   const [uploadNotice, setUploadNotice] = useState('');
+  const [selectedProfileImageFile, setSelectedProfileImageFile] = useState(null);
+  const [profileImageNotice, setProfileImageNotice] = useState('');
+  const [profileImagePreview, setProfileImagePreview] = useState('');
   const [gitSyncStatus, setGitSyncStatus] = useState('');
 
   useEffect(() => {
@@ -41,7 +66,9 @@ export default function ProfileManager() {
           setGithub(data.github_url || data.github || '');
           setLinkedin(data.linkedin_url || data.linkedin || '');
           setResumeUrl(data.resume_url || data.resumeUrl || '');
-          setProfileImageUrl(data.profile_image_url || data.profileImageUrl || '');
+          const imgUrl = data.profile_image_url || data.profileImageUrl || '';
+          setProfileImageUrl(imgUrl);
+          setProfileImagePreview(imgUrl);
         }
       } catch (err) {
         setError(err.message || 'Failed to load profile data from Supabase.');
@@ -70,6 +97,29 @@ export default function ProfileManager() {
 
     setSelectedResumeFile(file);
     setUploadNotice(`File selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB). Will upload on save.`);
+    setError('');
+  };
+
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5 MB
+    if (file.size > maxSize) {
+      setError('File size exceeds the 5 MB limit.');
+      return;
+    }
+
+    setSelectedProfileImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImagePreview(previewUrl);
+    setProfileImageNotice(`Photo selected: ${file.name}. Will upload on save.`);
     setError('');
   };
 
@@ -144,12 +194,13 @@ export default function ProfileManager() {
 
     try {
       let finalResumeUrl = resumeUrl;
+      let finalProfileImageUrl = profileImageUrl;
 
-      // If a new PDF file is selected
+      // 1. Upload Resume PDF
       if (selectedResumeFile) {
         setGitSyncStatus('Uploading PDF and syncing with Git repository...');
 
-        // 1. Upload to Supabase Storage (for production live site fallback)
+        // Upload to Supabase Storage (fallback)
         let storagePublicUrl = '';
         try {
           const uploadRes = await uploadResumeFile(selectedResumeFile);
@@ -158,7 +209,7 @@ export default function ProfileManager() {
           console.error('Supabase storage upload failed:', uploadErr);
         }
 
-        // 2. Upload to local Vite server (saves in public/assets/resume.pdf and commits/pushes)
+        // Upload to local Vite server (primary)
         try {
           const response = await fetch('/api/admin/resume', {
             method: 'POST',
@@ -171,18 +222,51 @@ export default function ProfileManager() {
           if (response.ok) {
             const resData = await response.json();
             console.log('Local resume upload success:', resData);
-            // Use the local path so it is relative and works on GitHub Pages
             finalResumeUrl = 'assets/resume.pdf';
-            setGitSyncStatus('Successfully committed and pushed to GitHub!');
           } else {
             console.warn('Local endpoint not available. Using Supabase public URL.');
             finalResumeUrl = storagePublicUrl || resumeUrl;
-            setGitSyncStatus('Uploaded to Supabase. (Local Git sync not available)');
           }
         } catch (localErr) {
           console.warn('Failed to upload to local dev server:', localErr);
           finalResumeUrl = storagePublicUrl || resumeUrl;
-          setGitSyncStatus('Uploaded to Supabase. (Local Git sync not available)');
+        }
+      }
+
+      // 2. Upload Profile Image Photo
+      if (selectedProfileImageFile) {
+        setGitSyncStatus('Uploading profile image and syncing with Git...');
+
+        // Upload to Supabase Storage (fallback)
+        let storageImgUrl = '';
+        try {
+          const uploadRes = await uploadProfileImageFile(selectedProfileImageFile);
+          storageImgUrl = uploadRes.publicUrl;
+        } catch (uploadErr) {
+          console.error('Supabase image upload failed:', uploadErr);
+        }
+
+        // Upload to local Vite server (primary)
+        try {
+          const response = await fetch('/api/admin/profile-image', {
+            method: 'POST',
+            headers: {
+              'Content-Type': selectedProfileImageFile.type,
+            },
+            body: selectedProfileImageFile,
+          });
+
+          if (response.ok) {
+            const resData = await response.json();
+            console.log('Local image upload success:', resData);
+            finalProfileImageUrl = 'assets/images/profile.jpg';
+          } else {
+            console.warn('Local endpoint not available. Using Supabase public URL.');
+            finalProfileImageUrl = storageImgUrl || profileImageUrl;
+          }
+        } catch (localErr) {
+          console.warn('Failed to upload to local dev server:', localErr);
+          finalProfileImageUrl = storageImgUrl || profileImageUrl;
         }
       }
 
@@ -197,17 +281,21 @@ export default function ProfileManager() {
         github,
         linkedin,
         resumeUrl: finalResumeUrl,
-        profileImageUrl,
+        profileImageUrl: finalProfileImageUrl,
       };
 
       const updated = await updateProfile(payload);
       if (updated && updated.id) {
         setProfileId(updated.id);
         setResumeUrl(finalResumeUrl);
+        setProfileImageUrl(finalProfileImageUrl);
+        setProfileImagePreview(finalProfileImageUrl);
       }
       
       setSelectedResumeFile(null);
       setUploadNotice('');
+      setSelectedProfileImageFile(null);
+      setProfileImageNotice('');
       setSuccess('Profile settings successfully saved!');
       setTimeout(() => {
         setSuccess('');
@@ -259,6 +347,51 @@ export default function ProfileManager() {
       )}
 
       <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+        
+        {/* Profile Avatar Upload / Preview Section */}
+        <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl bg-slate-800/40 border border-slate-700/50">
+          <div className="relative group shrink-0">
+            {profileImagePreview ? (
+              <img
+                src={getProfileImageUrl(profileImagePreview)}
+                alt="Profile Preview"
+                className="w-24 h-24 rounded-2xl object-cover border border-slate-700 shadow-md group-hover:scale-[1.02] transition-transform"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-2xl bg-slate-800 border border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-500 font-mono text-[10px]">
+                No Photo
+              </div>
+            )}
+            <label className="absolute inset-0 bg-slate-950/40 hover:bg-slate-950/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-[10px] text-white font-medium">
+              <span>Change Photo</span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleProfileImageChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          <div className="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
+            <h4 className="text-sm font-semibold text-slate-200">Profile Photo</h4>
+            <p className="text-[11px] text-slate-400">
+              Upload a professional square picture (max 5 MB). Supported formats: JPEG, PNG, WEBP, GIF.
+            </p>
+            {profileImageNotice && (
+              <div className="text-[10px] text-sky-400 font-mono bg-sky-950/20 border border-sky-900/30 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 inline-block">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 animate-pulse" />
+                <span>{profileImageNotice}</span>
+              </div>
+            )}
+            <div className="pt-1">
+              <span className="text-[10px] text-slate-500 font-mono break-all">
+                {profileImageUrl ? `Current Path: ${profileImageUrl}` : 'No image path configured'}
+              </span>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-1">
           <label className="text-xs text-slate-300">Full Name</label>
           <input

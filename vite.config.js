@@ -37,8 +37,52 @@ function gitSyncPlugin() {
       server.middlewares.use(async (req, res, next) => {
         const urlPath = req.url.split('?')[0];
 
-        // 1. Resume management endpoint
-        if (urlPath === '/api/admin/resume' || urlPath.endsWith('/api/admin/resume')) {
+        // 1. Profile image management endpoint
+        if (urlPath === '/api/admin/profile-image' || urlPath.endsWith('/api/admin/profile-image')) {
+          if (req.method === 'POST') {
+            const imagesDir = path.resolve(__dirname, 'public/assets/images');
+            if (!fs.existsSync(imagesDir)) {
+              fs.mkdirSync(imagesDir, { recursive: true });
+            }
+            const filePath = path.join(imagesDir, 'profile.jpg');
+            const writeStream = fs.createWriteStream(filePath);
+            req.pipe(writeStream);
+
+            writeStream.on('finish', async () => {
+              try {
+                // Copy to public root as fallback
+                const publicRootPath = path.resolve(__dirname, 'public/profile.jpg');
+                fs.copyFileSync(filePath, publicRootPath);
+
+                // Run git commands
+                const gitRes = await runGitCommand(
+                  'git add public/assets/images/profile.jpg public/profile.jpg && git commit -m "chore: update profile image" && git push origin main'
+                );
+
+                if (gitRes.success) {
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ success: true, message: 'Profile image updated and pushed to Git', stdout: gitRes.stdout }));
+                } else {
+                  res.writeHead(500, { 'Content-Type': 'application/json' });
+                  res.end(JSON.stringify({ error: gitRes.error, stderr: gitRes.stderr }));
+                }
+              } catch (copyErr) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: copyErr.message }));
+              }
+            });
+
+            writeStream.on('error', (err) => {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: err.message }));
+            });
+          } else {
+            res.writeHead(405, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+          }
+
+        // 2. Resume management endpoint
+        } else if (urlPath === '/api/admin/resume' || urlPath.endsWith('/api/admin/resume')) {
           if (req.method === 'POST') {
             const assetsDir = path.resolve(__dirname, 'public/assets');
             if (!fs.existsSync(assetsDir)) {

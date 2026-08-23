@@ -746,3 +746,47 @@ export async function syncDatabaseToGit(actionName) {
   }
 }
 
+/**
+ * Upload a profile image file to Supabase Storage.
+ */
+export async function uploadProfileImageFile(file) {
+  checkSupabaseConfigured();
+
+  if (!file) {
+    throw new Error('No file provided for upload.');
+  }
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.');
+  }
+
+  const maxSize = 5 * 1024 * 1024; // 5 MB
+  if (file.size > maxSize) {
+    throw new Error('File size exceeds the 5 MB limit.');
+  }
+
+  const ext = file.name.split('.').pop() || 'webp';
+  const fileName = `profile/profile-${Date.now()}.${ext}`;
+
+  const { data, error } = await supabase.storage
+    .from('portfolio-images')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: true,
+    });
+
+  if (error) {
+    throw new Error(`Storage upload failed: ${error.message}`);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('portfolio-images')
+    .getPublicUrl(data.path);
+
+  return {
+    path: data.path,
+    publicUrl: urlData.publicUrl,
+  };
+}
+
