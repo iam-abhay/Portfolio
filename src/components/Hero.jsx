@@ -35,6 +35,7 @@ export default function Hero({ profile, onOpenTerminal }) {
   const [roleIdx, setRoleIdx] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const currentRole = roles[roleIdx];
@@ -190,24 +191,18 @@ export default function Hero({ profile, onOpenTerminal }) {
           >
             <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:shadow-sky-500/15 hover:-translate-y-1 hover:rotate-1 transition-all duration-300 space-y-6 group">
               <div className="flex items-center gap-4">
-                <img
-                  src={getProfileImageUrl(profile.profileImageUrl)}
-                  alt="Abhay Kharat Profile"
-                  className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform"
-                  id="profile-avatar-image"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    const fallback = document.getElementById('profile-initials-fallback');
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-                <div
-                  id="profile-initials-fallback"
-                  style={{ display: 'none' }}
-                  className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform"
-                >
-                  AK
-                </div>
+                {!imageError ? (
+                  <img
+                    src={getProfileImageUrl(profile.profileImageUrl)}
+                    alt="Abhay Kharat Profile"
+                    className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform"
+                    onError={() => setImageError(true)}
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform">
+                    AK
+                  </div>
+                )}
                 <div>
                   <h3 className="font-heading font-bold text-slate-900 dark:text-white text-base">
                     Abhay Dilip Kharat

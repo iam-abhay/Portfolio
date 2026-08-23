@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Github, Linkedin, ArrowUp } from 'lucide-react';
 
 const getProfileImageUrl = (url) => {
@@ -13,6 +13,7 @@ const getProfileImageUrl = (url) => {
 };
 
 export default function Footer({ profile }) {
+  const [imageError, setImageError] = useState(false);
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -24,24 +25,18 @@ export default function Footer({ profile }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="relative w-9 h-9 shrink-0">
-              <img
-                src={getProfileImageUrl(profile?.profileImageUrl)}
-                alt="Abhay Kharat Profile"
-                className="w-9 h-9 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shadow-md"
-                id="footer-avatar-image"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  const fallback = document.getElementById('footer-initials-fallback');
-                  if (fallback) fallback.style.display = 'flex';
-                }}
-              />
-              <div
-                id="footer-initials-fallback"
-                style={{ display: 'none' }}
-                className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md"
-              >
-                AK
-              </div>
+              {!imageError ? (
+                <img
+                  src={getProfileImageUrl(profile?.profileImageUrl)}
+                  alt="Abhay Kharat Profile"
+                  className="w-9 h-9 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shadow-md"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                  AK
+                </div>
+              )}
             </div>
             <div>
               <span className="font-heading font-bold text-slate-900 dark:text-white text-base block">

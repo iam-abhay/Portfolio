@@ -17,6 +17,7 @@ export default function Navbar({ profile, onOpenTerminal }) {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,24 +48,18 @@ export default function Navbar({ profile, onOpenTerminal }) {
         {/* Brand Logo */}
         <a href="#hero" className="flex items-center gap-3 group">
           <div className="relative w-10 h-10 shrink-0">
-            <img
-              src={getProfileImageUrl(profile?.profileImageUrl)}
-              alt="Abhay Kharat Profile"
-              className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform"
-              id="header-avatar-image"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                const fallback = document.getElementById('header-initials-fallback');
-                if (fallback) fallback.style.display = 'flex';
-              }}
-            />
-            <div
-              id="header-initials-fallback"
-              style={{ display: 'none' }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform"
-            >
-              AK
-            </div>
+            {!imageError ? (
+              <img
+                src={getProfileImageUrl(profile?.profileImageUrl)}
+                alt="Abhay Kharat Profile"
+                className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
+                AK
+              </div>
+            )}
           </div>
           <div className="flex flex-col">
             <span className="font-heading font-bold text-lg text-slate-900 dark:text-white leading-tight">
