@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Sparkles, Check, X, Loader2, AlertCircle, CheckCircle2, Upload, Image as ImageIcon, ImageOff } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Sparkles, Check, X, Loader2, AlertCircle, CheckCircle2, Upload, Image as ImageIcon, ImageOff, Github, ExternalLink } from 'lucide-react';
 import { fetchAdminProjects, createProject, updateProject, deleteProject, uploadProjectImage, deleteProjectImage } from '../../lib/adminApi';
 import { getResolvedImageUrl } from '../../components/ProjectCard';
 
@@ -583,12 +583,28 @@ export default function ProjectManager() {
                             <ImageIcon className="w-4 h-4" />
                           </div>
                         )}
-                        <div>
-                          <div>{proj.title}</div>
+                        <div className="space-y-1">
+                          <div className="font-semibold text-white">{proj.title}</div>
+                          <div className="flex items-center gap-3 text-[10px] font-mono text-slate-400">
+                            {proj.github_url ? (
+                              <a href={proj.github_url} target="_blank" rel="noopener noreferrer" className="hover:text-sky-400 flex items-center gap-1 transition-colors">
+                                <Github className="w-3 h-3 text-slate-500" /> Repo
+                              </a>
+                            ) : (
+                              <span className="text-slate-600">No Repo</span>
+                            )}
+                            {proj.live_url && proj.live_url !== '#' ? (
+                              <a href={proj.live_url} target="_blank" rel="noopener noreferrer" className="hover:text-sky-400 flex items-center gap-1 transition-colors">
+                                <ExternalLink className="w-3 h-3 text-slate-500" /> Live Demo
+                              </a>
+                            ) : (
+                              <span className="text-slate-600">No Demo</span>
+                            )}
+                          </div>
                           {proj.featured && (
                             <button
                               onClick={() => handleToggleFeatured(proj.id)}
-                              className="inline-flex items-center gap-1 text-[10px] text-amber-400 hover:underline mt-0.5"
+                              className="inline-flex items-center gap-1 text-[10px] text-amber-400 hover:underline"
                               title="Click to unfeature"
                             >
                               <Sparkles className="w-3 h-3" /> Featured
