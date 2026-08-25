@@ -67,8 +67,8 @@ async function main() {
 
   // Authenticate Admin
   console.log('\n--- Admin Authentication Required ---');
-  const email = await question('Enter Admin Email: ');
-  const password = await question('Enter Admin Password: ');
+  const email = process.env.ADMIN_EMAIL || await question('Enter Admin Email: ');
+  const password = process.env.ADMIN_PASSWORD || await question('Enter Admin Password: ');
 
   if (!email || !password) {
     console.error('Error: Email and password are required.');
@@ -96,7 +96,9 @@ async function main() {
   console.log('profiles, projects, skills, experience, education, certifications, social_links');
   console.log('And overwrite them with data from your local db_backup.json.');
   console.log('=============================================');
-  const confirm = await question('\nType "RESTORE" to confirm this action: ');
+  const confirm = process.env.AUTO_CONFIRM === 'true' 
+    ? 'RESTORE' 
+    : await question('\nType "RESTORE" to confirm this action: ');
 
   if (confirm !== 'RESTORE') {
     console.log('Action cancelled.');
