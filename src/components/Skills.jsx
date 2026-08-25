@@ -38,10 +38,14 @@ export default function Skills() {
     languages: Code2,
     backend: Server,
     frontend: Layout,
+    database: Database,
     databases: Database,
+    'cloud-devops': Wrench,
     devops: Wrench,
+    tools: Wrench,
     monitoring: Activity,
     data: BarChart2,
+    'data-analytics-bi': BarChart2,
   };
 
   return (

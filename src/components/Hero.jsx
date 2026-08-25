@@ -26,10 +26,20 @@ const getProfileImageUrl = (url) => {
 
 export default function Hero({ profile, onOpenTerminal }) {
   const roles = [
-    "Java Backend / Full-Stack Developer",
-    "Spring Boot & PostgreSQL Engineer",
-    "Data Analytics & Engineering Enthusiast",
-    "Software Engineer | SKNCOE Graduate (2026)"
+    "Software Engineer",
+    "Data Analyst",
+    "Business Intelligence Enthusiast",
+    "Java Full Stack Developer",
+    "Spring Boot | React.js",
+    "Excel | SQL | Power BI",
+    "AWS Cloud Infrastructure",
+    "Terraform | Infrastructure as Code",
+    "Docker | Kubernetes",
+    "Cloud Security | IAM",
+    "AWS Networking | VPC",
+    "CI/CD | DevOps",
+    "Building Data-Driven Applications",
+    "Always Learning New Technologies"
   ];
   
   const [roleIdx, setRoleIdx] = useState(0);
