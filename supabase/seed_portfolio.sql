@@ -66,8 +66,7 @@ INSERT INTO public.projects (
   image_url,
   featured,
   published,
-  display_order,
-  metrics
+  display_order
 ) VALUES 
 (
   'e3ba6c71-3310-4bf6-905c-d784a95cb88a',
@@ -83,8 +82,7 @@ INSERT INTO public.projects (
   'assets/images/project-dev-platform.jpg',
   true,
   true,
-  1,
-  '100% automated IaC provisioning & cost-aware resource allocation'
+  1
 ),
 (
   'fa446c82-841f-4efc-8b87-fa74ab89cb9c',
@@ -100,8 +98,7 @@ INSERT INTO public.projects (
   'assets/images/project-ai-analytics.jpg',
   true,
   true,
-  2,
-  'End-to-end KPI tracking & visual data reporting'
+  2
 ),
 (
   '3bf304b4-f24c-4beb-b7ec-1a4afbf01d04',
@@ -117,8 +114,7 @@ INSERT INTO public.projects (
   'https://lwjvcfttycctwygkuoji.supabase.co/storage/v1/object/public/portfolio-images/projects/1787492237730-5qly29w.png',
   true,
   true,
-  3,
-  NULL
+  3
 ),
 (
   '6ae26c46-f400-48e1-952e-670325e4de0a',
@@ -134,8 +130,7 @@ INSERT INTO public.projects (
   'assets/images/project-dev-platform.jpg',
   true,
   true,
-  4,
-  NULL
+  4
 ),
 (
   '97265595-a746-4eb4-aa99-33cad7c0ff35',
@@ -151,8 +146,7 @@ INSERT INTO public.projects (
   'assets/images/project-cyber-shop.jpg',
   true,
   true,
-  5,
-  NULL
+  5
 );
 
 -- 4. SEED SKILLS TABLE

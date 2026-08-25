@@ -41,7 +41,6 @@
       "featured": true,
       "published": true,
       "display_order": 1,
-      "metrics": "100% automated IaC provisioning & cost-aware resource allocation",
       "created_at": "2026-08-25T11:45:00.000Z",
       "updated_at": "2026-08-25T11:45:00.000Z"
     },
@@ -66,7 +65,6 @@
       "featured": true,
       "published": true,
       "display_order": 2,
-      "metrics": "End-to-end KPI tracking & visual data reporting",
       "created_at": "2026-08-25T11:45:00.000Z",
       "updated_at": "2026-08-25T11:45:00.000Z"
     },
