@@ -137,6 +137,12 @@ async function main() {
           const clean = { ...rec };
           delete clean.created_at; // Allow Supabase default timestamp
           delete clean.updated_at;
+          delete clean.metrics;    // Ensure compatibility with tables without metrics column
+          delete clean.secondary_category; // Ensure compatibility with tables without secondary_category column
+          delete clean.secondaryCategory;  // Ensure compatibility with tables without secondaryCategory column
+          if (clean.id && !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(clean.id)) {
+            delete clean.id; // Let Supabase auto-generate standard UUIDs
+          }
           return clean;
         });
 
