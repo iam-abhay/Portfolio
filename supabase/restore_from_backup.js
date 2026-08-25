@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 // Custom lightweight environment file parser
 function loadEnv() {
@@ -141,7 +142,7 @@ async function main() {
           delete clean.secondary_category; // Ensure compatibility with tables without secondary_category column
           delete clean.secondaryCategory;  // Ensure compatibility with tables without secondaryCategory column
           if (clean.id && !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(clean.id)) {
-            delete clean.id; // Let Supabase auto-generate standard UUIDs
+            clean.id = crypto.randomUUID(); // Generate standard UUID locally
           }
           return clean;
         });
